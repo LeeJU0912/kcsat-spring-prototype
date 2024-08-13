@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
+
+    <div class="form-group">
+        <label for="response">문제 생성 결과</label>
+        <p type="text" th:text="${response}" class="text-xl-left" id="response"></p>
+<!--        <textarea type="text" th:text="response" name="response" class="text-xl-center" id="response" placeholder="생성된 지문">-->
+<!--        </textarea>-->
+    </div>
+
+    <br/>
+    <div th:replace="~{fragments/footer :: footer}" />
+
+</div> <!-- /container -->
+
+</body>
+</html>

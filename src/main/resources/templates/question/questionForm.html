@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
+
+    <form role="form" action="/question/new" method="post">
+
+        <div class="form-group">
+            <label for="type">문제 유형 선택</label>
+            <select name="type" id="type" class="form-control">
+                <option value="">원하는 문제 유형을 선택해 주세요.</option>
+                <option th:each="question : ${questionType}"
+                        th:value="${question.getKey()}"
+                        th:text="${question.getValue()}" />
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="mainText">원문 입력</label>
+            <input type="text" name="mainText" class="form-control" id="mainText" placeholder="생성하고자 하는 영어 지문을 입력하세요.">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br/>
+    <div th:replace="~{fragments/footer :: footer}" />
+
+</div> <!-- /container -->
+
+</body>
+</html>

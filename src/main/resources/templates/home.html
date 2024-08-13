@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}">
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+
+<div class="container">
+
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}" />
+
+    <div class="jumbotron">
+        <h1>기능 구현</h1>
+        <p class="lead">회원 기능</p>
+        <p>
+            <a class="btn btn-lg btn-secondary" href="/">회원 가입(X)</a>
+            <a class="btn btn-lg btn-secondary" href="/">회원 목록(X)</a>
+        </p>
+        <p class="lead">커뮤니티 기능</p>
+        <p>
+            <a class="btn btn-lg btn-dark" href="/">문제 공유 게시판(X)</a>
+            <a class="btn btn-lg btn-dark" href="/">이달의 문제(X)</a>
+        </p>
+        <p class="lead">AI 문제 생성 기능</p>
+        <p>
+            <a class="btn btn-lg btn-info" href="/question">문제 생성</a>
+            <a class="btn btn-lg btn-info" href="/">마이 워크북(X)</a>
+        </p>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}" />
+
+</div> <!-- /container -->
+
+</body>
+</html>
