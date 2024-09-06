@@ -1,8 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <div class="header" th:fragment="bodyHeader">
-    <ul class="nav nav-pills pull-right">
-        <li><a href="/">Home</a></li>
+    <a href="/"><h3 class="text-muted">K-SAT Maker</h3></a>
+
+    <ul class="nav justify-content-center">
+        <li class="nav-item"><a class="nav-link" href="/board">문제 공유 게시판</a></li>
+        <li class="nav-item"><a class="nav-link" href="/question">문제 생성</a></li>
+        <li class="nav-item"><a class="nav-link" href="/myBook">마이 워크북</a></li>
+        <li class="nav-item">
+            <span sec:authorize="hasRole('USER')">
+                <b th:text="${#authentication.name} + '님 환영합니다.'">사용자</b>
+                <a class="nav-link" href="/logout">로그아웃</a>
+            </span>
+            <span sec:authorize="!hasRole('USER')">
+                <span th:if="${param.logout}">
+                    로그아웃 하셨습니다.
+                </span>
+                <a class="nav-link" href="/login">로그인</a>
+            </span>
+        </li>
     </ul>
-    <a href="/"><h3 class="text-muted">수능 영어 문제 생성기</h3></a>
 </div>

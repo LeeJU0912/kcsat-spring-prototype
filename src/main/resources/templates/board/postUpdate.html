@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head th:replace="~{fragments/header :: header}">
+    <title>게시글 수정 | [[${post.getTitle()}]]</title>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
+    <h1 class="mt-4">Board</h1>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label for="title" class="form-label">title</label>
+                    <input type="text" class="form-control" id="title" name="title" th:value="${post.title}">
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">content</label>
+                    <textarea class="form-control" id="content" name="content">[[${post.content}]]</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="postDate" class="form-label">작성일</label> <input
+                        type="text" class="form-control" id="postDate" name="postDate"
+                        th:value="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">작성자</label> <input
+                        type="text" class="form-control" id="username" name="username"
+                        th:value="${post.username}" disabled>
+                </div>
+                <a th:href="@{/board/{id}(id=${id})}" class="btn btn-outline-secondary">본문</a>
+                <button type="submit" class="btn btn-primary">등록</button>
+            </form>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+</body>
+</html>

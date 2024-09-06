@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
+
+    <div class="container" layout:fragment="content">
+        <!-- 만약 문제를 체크하지 않았다면, 문제 선택 페이지로 이동. 문제를 선택하였다면 문제 띄우기 -->
+        <form th:action="@{/board/myQuestions}" method="get">
+            <button type="submit">문제 업로드</button>
+        </form>
+        <th:block th:if="${question.QId != null}">
+            <p th:text="${question.QId}"></p>
+            <p th:text="${question.questionType}"></p>
+            <p th:text="${question.title}"></p>
+            <p th:text="${question.mainText}"></p>
+            <div th:each="choice : ${question.choices}">
+                <p th:text="${choice}"></p>
+            </div>
+            <p th:text="${question.shareCounter}"></p>
+        </th:block>
+
+        <form method="post" enctype="multipart/form-data" action="/board/new">
+
+            <div class="form-group">
+                <label class="form-label mt-4">게시글 작성</label>
+
+                <div class="form-floating mb-3">
+                    <label for="title">제목</label>
+                    <input type="text" name="title" class="form-control" id="title" required>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <label for="content">내용</label>
+                    <textarea name="content" class="form-control" id="content" rows="3" style="height: 500px;" required></textarea>
+                </div>
+            </div>
+
+            <th:block th:if="${question.QId != null}">
+                <input type="hidden" name="qId" id="qId" th:value="${question.QId}"/>
+            </th:block>
+
+            <button type="submit" class="btn btn-primary">등록</button>
+        </form>
+
+    </div>
+
+    <br>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</div> <!-- /container -->
+
+</body>
+</html>

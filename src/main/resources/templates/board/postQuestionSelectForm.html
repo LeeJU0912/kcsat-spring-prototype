@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}">
+
+</head>
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
+
+    <!-- 선택된 항목의 세부 정보를 표시 -->
+    <div th:if="${bookQuestions != null}">
+        <form id="questionUploadForm" method="post" action="/board/uploadQuestion">
+            <table>
+                <tbody>
+                    <tr th:each="bookQuestion : ${bookQuestions}">
+                        <td>
+                            <input type="radio" name="qId" id="qId" th:value="${bookQuestion.question.id}"/>
+                        </td>
+                        <td th:text="${bookQuestion.question.title}">Item Name</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="submit">제출</button>
+        </form>
+    </div>
+
+    <!-- 항목이 선택되지 않았을 때 메시지 표시 -->
+    <div th:if="${bookQuestions == null}">
+        <p>No item selected.</p>
+    </div>
+
+    <br>
+    <br/>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script type="text/javascript">
+        function submitQuestion(qId) {
+            console.log(qId)
+            document.getElementById("qId").value = qId;
+            document.getElementById("questionUploadForm").submit();
+        }
+    </script>
+
+</div> <!-- /container -->
+
+</body>
+</html>

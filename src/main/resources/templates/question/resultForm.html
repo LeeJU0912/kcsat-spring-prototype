@@ -1,20 +1,47 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/header :: header}" />
+<head th:replace="~{fragments/header :: header}"></head>
 <body>
 
 <div class="container">
-    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
 
     <div class="form-group">
-        <label for="response">문제 생성 결과</label>
-        <p type="text" th:text="${response}" class="text-xl-left" id="response"></p>
-<!--        <textarea type="text" th:text="response" name="response" class="text-xl-center" id="response" placeholder="생성된 지문">-->
-<!--        </textarea>-->
+        <p type="text" th:text="${response.questionType}" class="text-xl-left" id="questionType"></p>
+        <h3 type="text" th:text="${response.title}" class="text-xl-left" id="question"></h3>
+        <p type="text" th:text="${response.mainText}" class="text-xl-left" id="mainText"></p>
+
+        <div th:each="choice : ${response.choices}">
+            <b type="text" th:text="${choice}" class="text-xl-left" id="choice"></b>
+        </div>
     </div>
 
-    <br/>
-    <div th:replace="~{fragments/footer :: footer}" />
+    <!-- form 생성 -->
+    <form th:action="@{/question/result/save}" method="post">
+
+        <!-- var1 값 -->
+        <input type="hidden" name="questionType" th:value="${response.questionType}" />
+        <!-- var1 값 -->
+        <input type="hidden" name="title" th:value="${response.title}" />
+
+        <!-- var2 값 -->
+        <input type="hidden" name="mainText" th:value="${response.mainText}" />
+
+        <!-- varList 값을 반복하며 hidden input으로 전송 -->
+        <div th:each="choice, iterStat : ${response.choices}">
+            <input type="hidden" name="choices" th:value="${choice}" />
+        </div>
+
+        <button type="submit" class="btn btn-outline-primary" name="action" value="save">내 문제집 저장</button>
+    </form>
+
+<!--    <div>-->
+<!--        <button type="button" class="btn btn-outline-primary" onclick="location.href='/members/new'">SNS 공유</button>-->
+<!--        <button type="button" class="btn btn-outline-primary" onclick="location.href='/question/result/save'">내 문제집 저장</button>-->
+<!--        <button type="button" class="btn btn-outline-primary" onclick="location.href='/members/new'">PDF 저장</button>-->
+<!--    </div>-->
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 
 </div> <!-- /container -->
 

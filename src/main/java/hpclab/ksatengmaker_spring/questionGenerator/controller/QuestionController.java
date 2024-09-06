@@ -1,17 +1,19 @@
 package hpclab.ksatengmaker_spring.questionGenerator.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import hpclab.ksatengmaker_spring.myBook.service.BookQuestionService;
+import hpclab.ksatengmaker_spring.questionGenerator.domain.Choice;
+import hpclab.ksatengmaker_spring.questionGenerator.domain.Question;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.QuestionType;
+import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseRawForm;
+import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionSubmitRawForm;
+import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionSubmitForm;
+import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseForm;
 import hpclab.ksatengmaker_spring.questionGenerator.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.json.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -20,48 +22,95 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class QuestionController {
 
     private final QuestionService questionService;
+    private final BookQuestionService bookQuestionService;
 
     // 양식 화면 로드
     @GetMapping("/question")
-    public String createForm(Model model) {
+    public String getForm(Model model) {
         model.addAttribute("questionType", questionService.questionTypeList());
         return "question/questionForm";
     }
 
-    @PostMapping("/question/new")
-    public String createInstance(InputForm form, RedirectAttributes redirectAttributes) throws JsonProcessingException, ParseException {
+    @PostMapping("/question/createRandom/GPT")
+    public String createDefaultQuestionByGPT(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
 
-        ObjectMapper test = new ObjectMapper();
+        redirectAttributes.addFlashAttribute("response", getQuestion(form, "/create/GPT"));
 
-        String s = test.writeValueAsString(form);
-        System.out.println(s);
+        log.info("GPT-4o로 기출 문제 definition : {} 생성 완료.", form.getType());
 
-        String definition = questionService.getDefinition(QuestionType.valueOf(form.getType()));
-        String mainText = form.getMainText();
-
-        // API 송신
-        QuestionForm response = questionService.getAIQuestion(new QuestionDTO(definition, mainText));
-
-        System.out.println("response.getResponse() = " + response.getResponse());
-
-//        JSONParser parser = new JSONParser(response.getResponse());
-//
-//        Object parse = parser.parse();
-//
-//        JSONObject object = (JSONObject) parse;
-//
-//        System.out.println("object.get(\"response\") = " + object.get("response"));
-
-        redirectAttributes.addFlashAttribute("response", response.getResponse());
-
-        log.info("FastAPI로 definition : " + form.getType() + " 송신 완료.");
-
-        return "redirect:/question/new";
+        return "redirect:/question/result";
     }
 
-    @GetMapping("/question/new")
-    public String resultForm(@ModelAttribute("response") String response, Model model) {
+    @PostMapping("/question/create/GPT")
+    public String createQuestionByGPT(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("response", getQuestion(form, "/create/GPT"));
+
+        log.info("GPT-4o로 외부 지문 문제 definition : {} 생성 완료.", form.getType());
+
+        return "redirect:/question/result";
+    }
+
+    @PostMapping("/question/createRandom/LLaMA")
+    public String createDefaultQuestionByLLaMA(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("response", getQuestion(form, "/create/LLaMA"));
+
+        log.info("LLaMA로 기출 문제 definition : {} 생성 완료.", form.getType());
+
+        return "redirect:/question/result";
+    }
+
+    @PostMapping("/question/create/LLaMA")
+    public String createQuestionByLLaMA(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("response", getQuestion(form, "/create/LLaMA"));
+
+        log.info("LLaMA로 외부 지문 문제 definition : {} 생성 완료.", form.getType());
+
+        return "redirect:/question/result";
+    }
+
+    private QuestionResponseRawForm getQuestion(QuestionSubmitRawForm form, String requestLink) {
+        QuestionType questionType = QuestionType.valueOf(form.getType());
+
+        String definition = questionService.getDefinition(questionType);
+        String mainText = questionService.getRandomDefaultDataset();
+
+        // API 송신
+        return questionService.getAIQuestion(new QuestionSubmitForm(requestLink, questionType, definition, mainText));
+    }
+
+    @GetMapping("/question/result")
+    public String resultForm(@ModelAttribute("response") QuestionResponseRawForm response, Model model) {
         model.addAttribute("response", response);
         return "question/resultForm";
+    }
+
+//    @PostMapping("/result/download/{fileName}")
+//    public String downloadFile(@PathVariable String fileName, Model model) {
+//
+//        return "question/resultForm";
+//    }
+
+    @PostMapping("/question/result/save")
+    public String saveQuestion(QuestionResponseRawForm form, RedirectAttributes redirectAttributes) {
+
+        Question question = Question
+                .builder()
+                .type(form.getQuestionType())
+                .title(form.getTitle())
+                .mainText(form.getMainText())
+                .shareCounter(0L)
+                .build();
+
+        question.setChoices(form.getChoices().stream().map(Choice::new).toList());
+
+        bookQuestionService.saveQuestion(question);
+
+        redirectAttributes.addFlashAttribute("response", form);
+
+
+        return "redirect:/question/result";
     }
 }

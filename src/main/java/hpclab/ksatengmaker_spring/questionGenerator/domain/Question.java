@@ -1,48 +1,44 @@
 package hpclab.ksatengmaker_spring.questionGenerator.domain;
 
+import hpclab.ksatengmaker_spring.community.domain.BaseTimeEntity;
+import hpclab.ksatengmaker_spring.myBook.domain.BookQuestion;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
-@Table(name = "questions")
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Question {
+@ToString
+public class Question extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
-    @Column(name = "question_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "QUESTION_ID")
     private Long id;
 
     private QuestionType type;
 
-    private String question;
+    private String title;
+
+    private Long shareCounter;
+
+    @Column(length = 2048)
     private String mainText;
-    private String choices;
-    private String answer;
-//
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "explanation_id")
-//    private Explanation explanation;
-//
-//    public void setExplanation(Explanation explanation) {
-//        this.explanation = explanation;
-//        this.explanation.setQuestion(this);
-//    }
 
-    public static Question createQuestion(String question, String mainText, String choices, String answer) {
-        Question now = new Question();
-        now.question = question;
-        now.mainText = mainText;
-        now.choices = choices;
-        now.answer = answer;
+    @Setter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "QUESTION_ID")
+    private List<Choice> choices;
 
-        return now;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ANSWER_ID")
+    private Answer answer;
+
+    public void upShareCounter() {
+        shareCounter++;
     }
-
-
 }

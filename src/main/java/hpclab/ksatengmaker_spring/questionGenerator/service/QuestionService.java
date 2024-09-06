@@ -1,40 +1,63 @@
 package hpclab.ksatengmaker_spring.questionGenerator.service;
 
-import hpclab.ksatengmaker_spring.questionGenerator.controller.QuestionDTO;
-import hpclab.ksatengmaker_spring.questionGenerator.controller.QuestionForm;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import hpclab.ksatengmaker_spring.questionGenerator.domain.Choice;
+import hpclab.ksatengmaker_spring.questionGenerator.domain.Question;
+import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseRawForm;
+import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionSubmitForm;
+import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseForm;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.QuestionType;
+import hpclab.ksatengmaker_spring.questionGenerator.repository.ChoiceJPARepository;
+import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionJPARepository;
 import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class QuestionService {
 
-    private static final String AIServerURL = "http://host.docker.internal:8000";
+    private static final String AIServerURL = "http://localhost:8000";
 
     private final QuestionRepository questionRepository;
+    private final QuestionJPARepository questionJPARepository;
+    private final ChoiceJPARepository choiceJPARepository;
 
-    public Map<QuestionType, String> questionTypeList() {
-        return questionRepository.findTypeAll();
+    public String getRandomDefaultDataset() {
+        Random random = new Random();
+        return questionRepository.getDefaultDatasets().get(random.nextInt(questionRepository.getDefaultDatasets().size()));
+    }
+
+    public TreeMap<QuestionType, String> questionTypeList() {
+        return questionRepository.getQuestionType();
     }
 
     public String getDefinition(QuestionType type) {
         return questionRepository.getDefinition(type);
     }
 
-    public QuestionForm getAIQuestion(QuestionDTO data) {
+    public void saveQuestion(Question question) {
+        questionJPARepository.save(question);
+    }
 
-        System.out.println(data.getMainText());
-        System.out.println(data.getDefinition());
-
+    public QuestionResponseRawForm getAIQuestion(QuestionSubmitForm data) {
 
         // WebClient 방식으로 송신.
         WebClient client = WebClient.create(AIServerURL);
@@ -45,30 +68,34 @@ public class QuestionService {
         form.put("mainText", data.getMainText());
 
         // URI에 원하는 API 경로 정의.
-        return client
+        QuestionResponseRawForm response = client
                 .post()
-                .uri("/predict")
+                .uri(data.getRequestLink())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(form)
                 .retrieve()
-                .bodyToMono(QuestionForm.class)
+                .bodyToMono(QuestionResponseRawForm.class)
                 .block();
 
 
-        // RestClient 방식
+        Question question = Question.builder()
+                .type(data.getQuestionType())
+                .title(response.getTitle())
+                .mainText(response.getMainText())
+                .shareCounter(0L)
+                .build();
 
-//        RestClient restClient = RestClient.builder()
-//                        .baseUrl("http://localhost:8000")
-//                                .build();
-//
-//        restClient.post()
-//                .uri("/predict")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(data)
-//                .exchange((clientRequest, clientResponse) -> {
-//                    String now = convert
-//                });
+        question.setChoices(response.getChoices().stream().map(now -> new Choice()).toList());
 
+        //saveQuestion(question);
+
+
+        return QuestionResponseRawForm.builder()
+                .questionType(question.getType())
+                .title(question.getTitle())
+                .mainText(question.getMainText())
+                .choices(response.getChoices())
+                .build();
     }
 }
