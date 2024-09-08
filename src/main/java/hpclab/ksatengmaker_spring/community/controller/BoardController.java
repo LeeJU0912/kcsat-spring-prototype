@@ -199,7 +199,7 @@ public class BoardController {
         model.addAttribute("bookQuestions", bookQuestions);
 
 
-        return "/board/postQuestionSelectForm";
+        return "board/postQuestionSelectForm";
     }
 
     @PostMapping("/board/uploadQuestion")
@@ -220,7 +220,7 @@ public class BoardController {
 
         model.addAttribute("question", result);
 
-        return "/board/postForm";
+        return "board/postForm";
     }
 
 
