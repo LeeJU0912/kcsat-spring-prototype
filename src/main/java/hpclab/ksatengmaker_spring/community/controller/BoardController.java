@@ -110,14 +110,14 @@ public class BoardController {
     public String upVotePost(@PathVariable Long id) {
         postService.increasePostVoteCount(id);
 
-        return "redirect:/board/" + id;
+        return "redirect:/board/post" + id;
     }
 
     @GetMapping("/board/post/{id}/postDownVote")
     public String downVotePost(@PathVariable Long id) {
         postService.decreasePostVoteCount(id);
 
-        return "redirect:/board/" + id;
+        return "redirect:/board/post" + id;
     }
 
 
@@ -128,7 +128,7 @@ public class BoardController {
         PostDto post = postService.getPost(id);
 
         if (!Objects.equals(userDetails.getUsername(), post.getEmail())) {
-            return "redirect:/board";
+            return "redirect:/board/post";
         }
 
         model.addAttribute("post", post);
@@ -141,7 +141,7 @@ public class BoardController {
     public String updateBoard(@PathVariable Long id, PostWriteForm form) {
         postService.updatePost(id, form);
 
-        return "redirect:/board/" + id;
+        return "redirect:/board/post" + id;
     }
 
     @GetMapping("/board/post/{id}/remove")
@@ -156,7 +156,7 @@ public class BoardController {
 
         postService.removePost(id);
 
-        return "redirect:/board";
+        return "redirect:/board/post";
     }
 
     /**
@@ -169,7 +169,7 @@ public class BoardController {
 
         postService.saveQuestionFromPost(id);
 
-        return "redirect:/board/{id}";
+        return "redirect:/board/post/{id}";
     }
 
     @GetMapping("/board/post/new")
@@ -187,7 +187,7 @@ public class BoardController {
         Long pId = postService.savePost(form, userDetails.getUsername());
         postService.setPostCount(pId);
 
-        return "redirect:/board";
+        return "redirect:/board/post";
     }
 
     @GetMapping("/board/post/myQuestions")
@@ -233,27 +233,27 @@ public class BoardController {
 
         commentService.setCommentCount(cId);
 
-        return "redirect:/board/" + id;
+        return "redirect:/board/post" + id;
     }
 
     @GetMapping("/board/post/{id}/comment/{cId}/commentUpVote")
     public String upVoteComment(@PathVariable Long id, @PathVariable Long cId) {
         commentService.increaseCommentCount(cId);
 
-        return "redirect:/board/" + id;
+        return "redirect:/board/post" + id;
     }
 
     @GetMapping("/board/post/{id}/comment/{cId}/commentDownVote")
     public String downVoteComment(@PathVariable Long id, @PathVariable Long cId) {
         commentService.decreaseCommentCount(cId);
 
-        return "redirect:/board/" + id;
+        return "redirect:/board/post" + id;
     }
 
     @GetMapping("/board/post/{id}/comment/{commentId}/remove")
     public String removeComment(@PathVariable Long id, @PathVariable Long commentId) {
         commentService.deleteComment(commentId);
 
-        return "redirect:/board/" + id;
+        return "redirect:/board/post" + id;
     }
 }
