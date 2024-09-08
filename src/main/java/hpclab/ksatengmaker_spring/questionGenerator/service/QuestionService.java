@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class QuestionService {
 
-    private static final String AIServerURL = "http://localhost:8000";
+    private static final String AIServerURL = "http://172.17.0.8:8000";
 
     private final QuestionRepository questionRepository;
     private final QuestionJPARepository questionJPARepository;
