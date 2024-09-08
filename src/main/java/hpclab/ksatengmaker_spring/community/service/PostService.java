@@ -24,13 +24,17 @@ public interface PostService {
 
     String setPostCount(Long postId);
 
-    String increasePostCount(Long postId);
+    String increasePostViewCount(Long postId);
 
-    String getPostCount(Long postId);
+    String getPostViewCount(Long postId);
 
     String increasePostVoteCount(Long postId);
 
     String decreasePostVoteCount(Long postId);
+
+    String getIncreasePostVoteCount(Long postId);
+
+    String getDecreasePostVoteCount(Long postId);
 
     void updatePostRank();
 }

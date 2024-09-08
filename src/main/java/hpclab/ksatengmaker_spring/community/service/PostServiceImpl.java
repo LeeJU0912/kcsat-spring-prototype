@@ -128,37 +128,46 @@ public class PostServiceImpl implements PostService {
     @Override
     public String setPostCount(Long postId) {
 
-        String pId = "post:" + postId + ":viewCount";
+        String viewCount = "post:" + postId + ":viewCount";
         String upVote = "post:" + postId + ":upVote";
         String downVote = "post:" + postId + ":downVote";
 
-        redisTemplate.opsForValue().set(pId, "0");
+        redisTemplate.opsForValue().set(viewCount, "0");
         redisTemplate.opsForValue().set(upVote, "0");
         redisTemplate.opsForValue().set(downVote, "0");
 
-        return redisTemplate.opsForValue().get(pId);
+        return redisTemplate.opsForValue().get(viewCount);
     }
 
     @Override
-    public String increasePostCount(Long postId) {
+    public String increasePostViewCount(Long postId) {
         String pId = "post:" + postId + ":viewCount";
 
-        redisTemplate.opsForValue().increment(pId);
+        String user = "post:" + postId + ":user:" + getUserEmail();
+
+        System.out.println(postId + user);
+
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(user))) {
+            // 예외 발생
+        }
+        else {
+            redisTemplate.opsForValue().increment(pId);
+            redisTemplate.opsForValue().set(user, "1");
+        }
 
         return redisTemplate.opsForValue().get(pId);
     }
 
     @Override
-    public String getPostCount(Long postId) {
+    public String getPostViewCount(Long postId) {
         return redisTemplate.opsForValue().get("post:" + postId + ":viewCount");
     }
-
 
     @Override
     public String increasePostVoteCount(Long postId) {
 
         String upVote = "post:" + postId + ":upVote";
-        String user = "post:" + postId + ":user:" + getUserEmail();
+        String user = "post:" + postId + ":userVote:" + getUserEmail();
 
         if (Boolean.TRUE.equals(redisTemplate.hasKey(user))) {
             // 예외 발생
@@ -176,7 +185,7 @@ public class PostServiceImpl implements PostService {
     public String decreasePostVoteCount(Long postId) {
 
         String downVote = "post:" + postId + ":downVote";
-        String user = "post:" + postId + ":user:" + getUserEmail();
+        String user = "post:" + postId + ":userVote:" + getUserEmail();
 
         if (Boolean.TRUE.equals(redisTemplate.hasKey(user))) {
             // 예외 발생
@@ -189,11 +198,22 @@ public class PostServiceImpl implements PostService {
         return redisTemplate.opsForValue().get(downVote);
     }
 
+    @Override
+    public String getIncreasePostVoteCount(Long postId) {
+        return redisTemplate.opsForValue().get("post:" + postId + ":upVote");
+    }
+
+    @Override
+    public String getDecreasePostVoteCount(Long postId) {
+        return redisTemplate.opsForValue().get("post:" + postId + ":downVote");
+    }
+
     private static String getUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return userDetails.getUsername();
     }
+
 
     @Override
     @Scheduled(cron = "0 0 6 * * *") // 매일 오전 6시에 실행

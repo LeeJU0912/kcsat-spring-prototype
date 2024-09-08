@@ -74,25 +74,52 @@ public class BoardController {
 
     @GetMapping("/board/{id}")
     public String board(@PathVariable Long id, Model model) {
-        String counter = postService.increasePostCount(id);
         PostDto post = postService.getPost(id);
         List<CommentResponseForm> comments = commentService.getComments(id);
 
-        List<String> commentsLikeCounter = new ArrayList<>();
+        List<String> commentsUpVoteCounter = new ArrayList<>();
+        List<String> commentsDownVoteCounter = new ArrayList<>();
 
         for (CommentResponseForm comment : comments) {
-            String commentCount = commentService.getCommentCount(comment.getCId());
-            commentsLikeCounter.add(commentCount);
+            String commentUpVoteCount = commentService.getIncreaseCommentCount(comment.getCId());
+            commentsUpVoteCounter.add(commentUpVoteCount);
+
+            String commentDownVoteCount = commentService.getDecreaseCommentCount(comment.getCId());
+            commentsDownVoteCounter.add(commentDownVoteCount);
         }
 
+        String postViewCounter = postService.increasePostViewCount(id);
+        String postUpVoteCounter = postService.getIncreasePostVoteCount(id);
+        String postDownVoteCounter = postService.getDecreasePostVoteCount(id);
+
+        model.addAttribute("postViewCounter", postViewCounter);
+        model.addAttribute("postUpVoteCounter", postUpVoteCounter);
+        model.addAttribute("postDownVoteCounter", postDownVoteCounter);
+
         model.addAttribute("comments", comments);
-        model.addAttribute("commentsLikeCounter", commentsLikeCounter);
-        model.addAttribute("counter", counter);
+        model.addAttribute("commentsUpVoteCounter", commentsUpVoteCounter);
+        model.addAttribute("commentsDownVoteCounter", commentsDownVoteCounter);
+
         model.addAttribute("post", post);
         model.addAttribute("id", id);
 
         return "board/postDetail";
     }
+
+    @GetMapping("/board/{id}/postUpVote")
+    public String upVotePost(@PathVariable Long id) {
+        postService.increasePostVoteCount(id);
+
+        return "redirect:/board/" + id;
+    }
+
+    @GetMapping("/board/{id}/postDownVote")
+    public String downVotePost(@PathVariable Long id) {
+        postService.decreasePostVoteCount(id);
+
+        return "redirect:/board/" + id;
+    }
+
 
     @GetMapping("/board/{id}/update")
     public String updateBoardForm(@PathVariable Long id, Model model, Authentication auth) {
@@ -209,9 +236,16 @@ public class BoardController {
         return "redirect:/board/" + id;
     }
 
-    @GetMapping("/board/{id}/comment/{cId}/commentRecommend")
-    public String recommendComment(@PathVariable Long id, @PathVariable Long cId) {
+    @GetMapping("/board/{id}/comment/{cId}/commentUpVote")
+    public String upVoteComment(@PathVariable Long id, @PathVariable Long cId) {
         commentService.increaseCommentCount(cId);
+
+        return "redirect:/board/" + id;
+    }
+
+    @GetMapping("/board/{id}/comment/{cId}/commentDownVote")
+    public String downVoteComment(@PathVariable Long id, @PathVariable Long cId) {
+        commentService.decreaseCommentCount(cId);
 
         return "redirect:/board/" + id;
     }

@@ -61,6 +61,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long id) {
         commentRepository.deleteById(id);
+
     }
 
     @Override
@@ -80,17 +81,15 @@ public class CommentServiceImpl implements CommentService {
         String upVote = "comment:" + commentId + ":upVote";
         String user = "comment:" + commentId + ":user:" + getUserEmail();
 
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-
         if (Boolean.TRUE.equals(redisTemplate.hasKey(user))) {
             // 예외 발생
         }
         else {
-            valueOperations.increment(upVote);
-            valueOperations.set(user, "1");
+            redisTemplate.opsForValue().increment(upVote);
+            redisTemplate.opsForValue().set(user, "1");
         }
 
-        return valueOperations.get(upVote);
+        return redisTemplate.opsForValue().get(upVote);
     }
 
 
@@ -100,17 +99,15 @@ public class CommentServiceImpl implements CommentService {
         String downVote = "comment:" + commentId + ":downVote";
         String user = "comment:" + commentId + ":user:" + getUserEmail();
 
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-
         if (Boolean.TRUE.equals(redisTemplate.hasKey(user))) {
             // 예외 발생
         }
         else {
-            valueOperations.increment(downVote);
-            valueOperations.set(user, "1");
+            redisTemplate.opsForValue().increment(downVote);
+            redisTemplate.opsForValue().set(user, "1");
         }
 
-        return valueOperations.get(downVote);
+        return redisTemplate.opsForValue().get(downVote);
     }
 
     private static String getUserEmail() {
@@ -120,8 +117,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public String getCommentCount(Long commentId) {
+    public String getIncreaseCommentCount(Long commentId) {
 
-        return redisTemplate.opsForValue().get("comment:" + commentId + ":recCount");
+        return redisTemplate.opsForValue().get("comment:" + commentId + ":upVote");
+    }
+
+    @Override
+    public String getDecreaseCommentCount(Long commentId) {
+
+        return redisTemplate.opsForValue().get("comment:" + commentId + ":downVote");
     }
 }

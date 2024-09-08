@@ -20,5 +20,7 @@ public interface CommentService {
 
     String decreaseCommentCount(Long commentId);
 
-    String getCommentCount(Long commentId);
+    String getIncreaseCommentCount(Long commentId);
+
+    String getDecreaseCommentCount(Long commentId);
 }

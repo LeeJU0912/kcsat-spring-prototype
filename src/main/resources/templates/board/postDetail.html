@@ -15,7 +15,7 @@
             <form>
                 <div class="mb-3">
                     <label for="title" class="form-label">조회 수</label>
-                    <input type="text" class="form-control" id="counter" name="counter" th:value="${counter}" disabled>
+                    <input type="text" class="form-control" id="counter" name="counter" th:value="${postViewCounter}" disabled>
                 </div>
                 <div class="mb-3">
                     <label for="title" class="form-label">제목</label>
@@ -23,7 +23,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="content" class="form-label">글 내용</label>
-                    <textarea class="form-control" id="content" name="content" disabled>[[${post.content}]]</textarea>
+                    <textarea class="form-control" id="content" name="content" style="height: 500px;" disabled>[[${post.content}]]</textarea>
                 </div>
 <!--                <div class="mb-3" th:if="${dto.imageUrls != null}">-->
 <!--                    <label class="form-label">Images</label>-->
@@ -43,6 +43,17 @@
                         type="text" class="form-control" id="username" name="username"
                         th:value="${post.username}" disabled>
                 </div>
+
+                <small class="text-muted" th:text="'좋아요 : ' + ${postUpVoteCounter}"></small>
+                <div th:if="${post.email != #authentication.principal.username}">
+                    <a th:href="@{/board/{id}/postUpVote(id=${id})}" class="btn btn-sm btn-outline-info">like</a>
+                </div>
+
+                <small class="text-muted" th:text="'싫어요 : ' + ${postDownVoteCounter}"></small>
+                <div th:if="${post.email != #authentication.principal.username}">
+                    <a th:href="@{/board/{id}/postDownVote(id=${id})}" class="btn btn-sm btn-outline-info">unlike</a>
+                </div>
+
                 <a href="/board" class="btn btn-outline-secondary">list</a>
 
                 <th:block th:if="${post.email == #authentication.principal.username}">
@@ -112,9 +123,14 @@
                                     <a th:href="@{/board/{id}/comment/{commentId}/remove(id=${id}, commentId=${comment.CId})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this comment?')">Delete</a>
                                 </div>
 
-                                <small class="text-muted" th:text="'좋아요 : ' + ${commentsLikeCounter.get(stat.index)}"></small>
+                                <small class="text-muted" th:text="'좋아요 : ' + ${commentsUpVoteCounter.get(stat.index)}"></small>
                                 <div th:if="${comment.email != #authentication.principal.username}">
-                                    <a th:href="@{/board/{id}/comment/{cId}/commentRecommend(id=${id}, cId=${comment.CId})}" class="btn btn-sm btn-outline-info">like</a>
+                                    <a th:href="@{/board/{id}/comment/{cId}/commentUpVote(id=${id}, cId=${comment.CId})}" class="btn btn-sm btn-outline-info">like</a>
+                                </div>
+
+                                <small class="text-muted" th:text="'싫어요 : ' + ${commentsDownVoteCounter.get(stat.index)}"></small>
+                                <div th:if="${comment.email != #authentication.principal.username}">
+                                    <a th:href="@{/board/{id}/comment/{cId}/commentDownVote(id=${id}, cId=${comment.CId})}" class="btn btn-sm btn-outline-info">unlike</a>
                                 </div>
                             </div>
                         </div>
