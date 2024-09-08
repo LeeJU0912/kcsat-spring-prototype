@@ -65,21 +65,20 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public String setCommentCount(Long commentId) {
-        String s = "comment:" + commentId + ":recCount";
-        redisTemplate.opsForValue().set(s, "0");
 
-        return redisTemplate.opsForValue().get(s);
+        String upVote = "comment:" + commentId + ":upVote";
+        String downVote = "comment:" + commentId + ":downVote";
+        redisTemplate.opsForValue().set(upVote, "0");
+        redisTemplate.opsForValue().set(downVote, "0");
+
+        return redisTemplate.opsForValue().get(upVote);
     }
 
     @Override
     public String increaseCommentCount(Long commentId) {
-        String cId = "comment:" + commentId + ":recCount";
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
-
-        String user = "comment:" + commentId + ":user:" + email;
+        String upVote = "comment:" + commentId + ":upVote";
+        String user = "comment:" + commentId + ":user:" + getUserEmail();
 
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
@@ -87,11 +86,37 @@ public class CommentServiceImpl implements CommentService {
             // 예외 발생
         }
         else {
-            valueOperations.increment(cId);
+            valueOperations.increment(upVote);
             valueOperations.set(user, "1");
         }
 
-        return valueOperations.get(cId);
+        return valueOperations.get(upVote);
+    }
+
+
+    @Override
+    public String decreaseCommentCount(Long commentId) {
+
+        String downVote = "comment:" + commentId + ":downVote";
+        String user = "comment:" + commentId + ":user:" + getUserEmail();
+
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(user))) {
+            // 예외 발생
+        }
+        else {
+            valueOperations.increment(downVote);
+            valueOperations.set(user, "1");
+        }
+
+        return valueOperations.get(downVote);
+    }
+
+    private static String getUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return userDetails.getUsername();
     }
 
     @Override

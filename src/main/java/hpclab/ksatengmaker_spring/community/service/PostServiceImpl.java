@@ -12,12 +12,17 @@ import hpclab.ksatengmaker_spring.questionGenerator.domain.QuestionType;
 import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionJPARepository;
 import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -121,27 +127,79 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public String setPostCount(Long postId) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
         String pId = "post:" + postId + ":viewCount";
+        String upVote = "post:" + postId + ":upVote";
+        String downVote = "post:" + postId + ":downVote";
 
-        valueOperations.set(pId, "0");
+        redisTemplate.opsForValue().set(pId, "0");
+        redisTemplate.opsForValue().set(upVote, "0");
+        redisTemplate.opsForValue().set(downVote, "0");
 
-        return valueOperations.get(pId);
+        return redisTemplate.opsForValue().get(pId);
     }
 
     @Override
     public String increasePostCount(Long postId) {
         String pId = "post:" + postId + ":viewCount";
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
-        valueOperations.increment(pId);
+        redisTemplate.opsForValue().increment(pId);
 
-        return valueOperations.get(pId);
+        return redisTemplate.opsForValue().get(pId);
     }
 
     @Override
     public String getPostCount(Long postId) {
         return redisTemplate.opsForValue().get("post:" + postId + ":viewCount");
+    }
+
+
+    @Override
+    public String increasePostVoteCount(Long postId) {
+
+        String upVote = "post:" + postId + ":upVote";
+        String user = "post:" + postId + ":user:" + getUserEmail();
+
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(user))) {
+            // 예외 발생
+        }
+        else {
+            redisTemplate.opsForValue().increment(upVote);
+            redisTemplate.opsForValue().set(user, "1");
+        }
+
+        return redisTemplate.opsForValue().get(upVote);
+    }
+
+
+    @Override
+    public String decreasePostVoteCount(Long postId) {
+
+        String downVote = "post:" + postId + ":downVote";
+        String user = "post:" + postId + ":user:" + getUserEmail();
+
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(user))) {
+            // 예외 발생
+        }
+        else {
+            redisTemplate.opsForValue().increment(downVote);
+            redisTemplate.opsForValue().set(user, "1");
+        }
+
+        return redisTemplate.opsForValue().get(downVote);
+    }
+
+    private static String getUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return userDetails.getUsername();
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 6 * * *") // 매일 오전 6시에 실행
+    public void updatePostRank() {
+        log.info("cron update post rank");
+
+
     }
 }

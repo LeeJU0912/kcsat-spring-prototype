@@ -5,11 +5,15 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -17,9 +21,6 @@ import java.util.stream.Collectors;
 @Repository
 @Getter
 public class QuestionRepository {
-
-    private static final String datasetFilePath = "/Users/leeju/IdeaProjects/KSatEngMaker_Spring/src/main/resources/static/dataset/K-SAT_dataset.json";
-    private static final String definitionFilePath = "/Users/leeju/IdeaProjects/KSatEngMaker_Spring/src/main/resources/static/dataset/K-SAT_definition.json";
 
     private final List<String> defaultDatasets;
     private final TreeMap<QuestionType, String> definitions;
@@ -45,10 +46,15 @@ public class QuestionRepository {
 
     @SuppressWarnings("unchecked")
     private TreeMap<QuestionType, String> makeDefinitions() throws Exception {
-        Reader file = new FileReader(definitionFilePath);
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("static/dataset/K-SAT_definition.json");
+
+        InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
 
         JSONParser parser = new JSONParser();
-        JSONObject object = (JSONObject) parser.parse(file);
+        JSONObject object = (JSONObject) parser.parse(reader);
+
+        reader.close();
 
         QuestionType[] values = QuestionType.values();
         ArrayList<String> definition = (ArrayList<String>) object.get("definition");
@@ -63,10 +69,15 @@ public class QuestionRepository {
     }
 
     private List<String> makeDatasets() throws Exception {
-        Reader file = new FileReader(datasetFilePath);
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("static/dataset/K-SAT_dataset.json");
+
+        InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
 
         JSONParser parser = new JSONParser();
-        JSONObject object = (JSONObject) parser.parse(file);
+        JSONObject object = (JSONObject) parser.parse(reader);
+
+        reader.close();
 
         return (ArrayList<String>) object.get("dataset");
     }

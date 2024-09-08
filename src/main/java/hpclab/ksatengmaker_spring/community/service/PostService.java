@@ -27,4 +27,10 @@ public interface PostService {
     String increasePostCount(Long postId);
 
     String getPostCount(Long postId);
+
+    String increasePostVoteCount(Long postId);
+
+    String decreasePostVoteCount(Long postId);
+
+    void updatePostRank();
 }
