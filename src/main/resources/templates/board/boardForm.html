@@ -34,7 +34,7 @@
         <tbody>
         <tr th:each="board : ${boardList}">
             <td th:text="${board.PId}"></td>
-            <td><a th:href="@{/board/{id}(id=${board.PId})}" th:text="${board.title}"></a></td>
+            <td><a th:href="@{/board/post/{id}(id=${board.PId})}" th:text="${board.title}"></a></td>
             <td th:text="${board.questionType}"></td>
             <td th:text="${board.username}"></td>
             <td th:text="${board.postDate} ? ${#temporals.format(board.postDate,'yyyy-MM-dd HH:mm')} : ${board.postDate}"></td>

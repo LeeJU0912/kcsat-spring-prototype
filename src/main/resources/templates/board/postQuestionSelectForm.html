@@ -10,7 +10,7 @@
 
     <!-- 선택된 항목의 세부 정보를 표시 -->
     <div th:if="${bookQuestions != null}">
-        <form id="questionUploadForm" method="post" action="/board/uploadQuestion">
+        <form id="questionUploadForm" method="post" action="/board/post/uploadQuestion">
             <table>
                 <tbody>
                     <tr th:each="bookQuestion : ${bookQuestions}">

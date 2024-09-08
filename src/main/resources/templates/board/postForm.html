@@ -10,7 +10,7 @@
 
     <div class="container" layout:fragment="content">
         <!-- 만약 문제를 체크하지 않았다면, 문제 선택 페이지로 이동. 문제를 선택하였다면 문제 띄우기 -->
-        <form th:action="@{/board/myQuestions}" method="get">
+        <form th:action="@{/board/post/myQuestions}" method="get">
             <button type="submit">문제 업로드</button>
         </form>
         <th:block th:if="${question.QId != null}">
@@ -24,7 +24,7 @@
             <p th:text="${question.shareCounter}"></p>
         </th:block>
 
-        <form method="post" enctype="multipart/form-data" action="/board/new">
+        <form method="post" enctype="multipart/form-data" action="/board/post/new">
 
             <div class="form-group">
                 <label class="form-label mt-4">게시글 작성</label>

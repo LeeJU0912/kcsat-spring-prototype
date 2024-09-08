@@ -28,8 +28,8 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authorize -> authorize
                                 // 페이지 권한 설정
-                                .requestMatchers("/member/**").hasRole("USER")
-                                .requestMatchers("/board/**").hasRole("USER")
+                                .requestMatchers("/member/**").hasRole("ADMIN")
+                                .requestMatchers("/board/post/**").hasRole("USER")
                                 .requestMatchers("/question/**").hasRole("USER")
                                 .requestMatchers("/myBook/**").hasRole("USER")
                                 .anyRequest().permitAll()

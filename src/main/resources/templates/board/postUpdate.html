@@ -30,7 +30,7 @@
                         type="text" class="form-control" id="username" name="username"
                         th:value="${post.username}" disabled>
                 </div>
-                <a th:href="@{/board/{id}(id=${id})}" class="btn btn-outline-secondary">본문</a>
+                <a th:href="@{/board/post/{id}(id=${id})}" class="btn btn-outline-secondary">본문</a>
                 <button type="submit" class="btn btn-primary">등록</button>
             </form>
         </div>

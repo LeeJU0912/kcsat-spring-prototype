@@ -51,14 +51,14 @@
 
                 <small class="text-muted" th:text="'싫어요 : ' + ${postDownVoteCounter}"></small>
                 <div th:if="${post.email != #authentication.principal.username}">
-                    <a th:href="@{/board/{id}/postDownVote(id=${id})}" class="btn btn-sm btn-outline-info">unlike</a>
+                    <a th:href="@{/board/post/{id}/postDownVote(id=${id})}" class="btn btn-sm btn-outline-info">unlike</a>
                 </div>
 
                 <a href="/board" class="btn btn-outline-secondary">list</a>
 
                 <th:block th:if="${post.email == #authentication.principal.username}">
-                    <a th:href="@{/board/{id}/update(id=${id})}" class="btn btn-outline-warning">modify</a>
-                    <a th:href="@{/board/{id}/remove(id=${id})}" class="btn btn-outline-danger" onclick="return confirm('삭제하시겠습니까?')">remove</a>
+                    <a th:href="@{/board/post/{id}/update(id=${id})}" class="btn btn-outline-warning">modify</a>
+                    <a th:href="@{/board/post/{id}/remove(id=${id})}" class="btn btn-outline-danger" onclick="return confirm('삭제하시겠습니까?')">remove</a>
                 </th:block>
             </form>
 
@@ -84,7 +84,7 @@
                     </div>
                 </form>
                 <th:block th:if="${post.email != #authentication.principal.username}">
-                    <a th:href="@{/board/{id}/save(id=${id})}" class="btn btn-outline-warning">saveQuestion</a>
+                    <a th:href="@{/board/post/{id}/save(id=${id})}" class="btn btn-outline-warning">saveQuestion</a>
                 </th:block>
             </th:block>
 
@@ -93,7 +93,7 @@
             <div class="card my-4">
                 <h5 class="card-header">Leave a Comment:</h5>
                 <div class="card-body">
-                    <form th:action="@{/board/{id}/comment(id=${id})}" th:method="post">
+                    <form th:action="@{/board/post/{id}/comment(id=${id})}" th:method="post">
                         <div class="form-group" style="margin-bottom: 10px;">
                             <input type="hidden" name="idx" th:value="*{idx}" />
                             <textarea name="content" class="form-control" rows="3"></textarea>
@@ -120,17 +120,17 @@
                                     </div>
                                 </div>
                                 <div th:if="${comment.email == #authentication.principal.username}">
-                                    <a th:href="@{/board/{id}/comment/{commentId}/remove(id=${id}, commentId=${comment.CId})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this comment?')">Delete</a>
+                                    <a th:href="@{/board/post/{id}/comment/{commentId}/remove(id=${id}, commentId=${comment.CId})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this comment?')">Delete</a>
                                 </div>
 
                                 <small class="text-muted" th:text="'좋아요 : ' + ${commentsUpVoteCounter.get(stat.index)}"></small>
                                 <div th:if="${comment.email != #authentication.principal.username}">
-                                    <a th:href="@{/board/{id}/comment/{cId}/commentUpVote(id=${id}, cId=${comment.CId})}" class="btn btn-sm btn-outline-info">like</a>
+                                    <a th:href="@{/board/post/{id}/comment/{cId}/commentUpVote(id=${id}, cId=${comment.CId})}" class="btn btn-sm btn-outline-info">like</a>
                                 </div>
 
                                 <small class="text-muted" th:text="'싫어요 : ' + ${commentsDownVoteCounter.get(stat.index)}"></small>
                                 <div th:if="${comment.email != #authentication.principal.username}">
-                                    <a th:href="@{/board/{id}/comment/{cId}/commentDownVote(id=${id}, cId=${comment.CId})}" class="btn btn-sm btn-outline-info">unlike</a>
+                                    <a th:href="@{/board/post/{id}/comment/{cId}/commentDownVote(id=${id}, cId=${comment.CId})}" class="btn btn-sm btn-outline-info">unlike</a>
                                 </div>
                             </div>
                         </div>
