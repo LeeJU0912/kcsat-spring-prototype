@@ -156,7 +156,7 @@ public class BoardController {
 
         postService.removePost(id);
 
-        return "redirect:/board/post";
+        return "redirect:/board";
     }
 
     /**
@@ -187,7 +187,7 @@ public class BoardController {
         Long pId = postService.savePost(form, userDetails.getUsername());
         postService.setPostCount(pId);
 
-        return "redirect:/board/post";
+        return "redirect:/board";
     }
 
     @GetMapping("/board/post/myQuestions")
