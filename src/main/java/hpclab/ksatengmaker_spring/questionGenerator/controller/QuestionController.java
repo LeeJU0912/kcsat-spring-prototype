@@ -34,7 +34,7 @@ public class QuestionController {
     @PostMapping("/question/createRandom/GPT")
     public String createDefaultQuestionByGPT(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
 
-        redirectAttributes.addFlashAttribute("response", getQuestion(form, "/create/GPT"));
+        redirectAttributes.addFlashAttribute("response", getRandomQuestion(form, "/create/GPT"));
 
         log.info("GPT-4o로 기출 문제 definition : {} 생성 완료.", form.getType());
 
@@ -44,7 +44,7 @@ public class QuestionController {
     @PostMapping("/question/create/GPT")
     public String createQuestionByGPT(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
 
-        redirectAttributes.addFlashAttribute("response", getQuestion(form, "/create/GPT"));
+        redirectAttributes.addFlashAttribute("response", getMyQuestion(form, "/create/GPT"));
 
         log.info("GPT-4o로 외부 지문 문제 definition : {} 생성 완료.", form.getType());
 
@@ -54,7 +54,7 @@ public class QuestionController {
     @PostMapping("/question/createRandom/LLaMA")
     public String createDefaultQuestionByLLaMA(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
 
-        redirectAttributes.addFlashAttribute("response", getQuestion(form, "/create/LLaMA"));
+        redirectAttributes.addFlashAttribute("response", getRandomQuestion(form, "/create/LLaMA"));
 
         log.info("LLaMA로 기출 문제 definition : {} 생성 완료.", form.getType());
 
@@ -64,14 +64,14 @@ public class QuestionController {
     @PostMapping("/question/create/LLaMA")
     public String createQuestionByLLaMA(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
 
-        redirectAttributes.addFlashAttribute("response", getQuestion(form, "/create/LLaMA"));
+        redirectAttributes.addFlashAttribute("response", getMyQuestion(form, "/create/LLaMA"));
 
         log.info("LLaMA로 외부 지문 문제 definition : {} 생성 완료.", form.getType());
 
         return "redirect:/question/result";
     }
 
-    private QuestionResponseRawForm getQuestion(QuestionSubmitRawForm form, String requestLink) {
+    private QuestionResponseRawForm getRandomQuestion(QuestionSubmitRawForm form, String requestLink) {
         QuestionType questionType = QuestionType.valueOf(form.getType());
 
         String definition = questionService.getDefinition(questionType);
@@ -79,6 +79,15 @@ public class QuestionController {
 
         // API 송신
         return questionService.getAIQuestion(new QuestionSubmitForm(requestLink, questionType, definition, mainText));
+    }
+
+    private QuestionResponseRawForm getMyQuestion(QuestionSubmitRawForm form, String requestLink) {
+        QuestionType questionType = QuestionType.valueOf(form.getType());
+
+        String definition = questionService.getDefinition(questionType);
+
+        // API 송신
+        return questionService.getAIQuestion(new QuestionSubmitForm(requestLink, questionType, definition, form.getMainText()));
     }
 
     @GetMapping("/question/result")

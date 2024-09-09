@@ -46,7 +46,7 @@
 
                 <small class="text-muted" th:text="'좋아요 : ' + ${postUpVoteCounter}"></small>
                 <div th:if="${post.email != #authentication.principal.username}">
-                    <a th:href="@{/board/{id}/postUpVote(id=${id})}" class="btn btn-sm btn-outline-info">like</a>
+                    <a th:href="@{/board/post/{id}/postUpVote(id=${id})}" class="btn btn-sm btn-outline-info">like</a>
                 </div>
 
                 <small class="text-muted" th:text="'싫어요 : ' + ${postDownVoteCounter}"></small>

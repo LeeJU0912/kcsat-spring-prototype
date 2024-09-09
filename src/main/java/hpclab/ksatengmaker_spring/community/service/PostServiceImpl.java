@@ -16,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -128,9 +131,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public String setPostCount(Long postId) {
 
-        String viewCount = "post:" + postId + ":viewCount";
-        String upVote = "post:" + postId + ":upVote";
-        String downVote = "post:" + postId + ":downVote";
+        String viewCount = "post:viewCount:" + postId;
+        String upVote = "post:upVote:" + postId;
+        String downVote = "post:downVote:" + postId;
 
         redisTemplate.opsForValue().set(viewCount, "0");
         redisTemplate.opsForValue().set(upVote, "0");
@@ -141,9 +144,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public String increasePostViewCount(Long postId) {
-        String pId = "post:" + postId + ":viewCount";
+        String pId = "post:viewCount:" + postId;
 
-        String user = "post:" + postId + ":user:" + getUserEmail();
+        String user = "post:userView:" + postId + ":" + getUserEmail();
 
         System.out.println(postId + user);
 
@@ -160,14 +163,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public String getPostViewCount(Long postId) {
-        return redisTemplate.opsForValue().get("post:" + postId + ":viewCount");
+        return redisTemplate.opsForValue().get("post:viewCount:" + postId);
     }
 
     @Override
     public String increasePostVoteCount(Long postId) {
 
-        String upVote = "post:" + postId + ":upVote";
-        String user = "post:" + postId + ":userVote:" + getUserEmail();
+        String upVote = "post:upVote:" + postId;
+        String user = "post:userVote:" + postId + ":" + getUserEmail();
 
         if (Boolean.TRUE.equals(redisTemplate.hasKey(user))) {
             // 예외 발생
@@ -184,8 +187,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public String decreasePostVoteCount(Long postId) {
 
-        String downVote = "post:" + postId + ":downVote";
-        String user = "post:" + postId + ":userVote:" + getUserEmail();
+        String downVote = "post:downVote:" + postId;
+        String user = "post:userVote:" + postId + ":" + getUserEmail();
 
         if (Boolean.TRUE.equals(redisTemplate.hasKey(user))) {
             // 예외 발생
@@ -200,12 +203,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public String getIncreasePostVoteCount(Long postId) {
-        return redisTemplate.opsForValue().get("post:" + postId + ":upVote");
+        return redisTemplate.opsForValue().get("post:upVote:" + postId);
     }
 
     @Override
     public String getDecreasePostVoteCount(Long postId) {
-        return redisTemplate.opsForValue().get("post:" + postId + ":downVote");
+        return redisTemplate.opsForValue().get("post:downVote:" + postId);
     }
 
     private static String getUserEmail() {
@@ -221,5 +224,20 @@ public class PostServiceImpl implements PostService {
         log.info("cron update post rank");
 
 
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
+    public void resetPostView() {
+        log.info("cron reset post userViewChk");
+
+        ScanOptions scanOptions = ScanOptions.scanOptions().match("post:userView:*").count(1000).build();
+
+        Cursor<byte[]> keys = redisTemplate.getConnectionFactory().getConnection().scan(scanOptions);
+
+        while(keys.hasNext()) {
+            String key = new String(keys.next());
+            redisTemplate.delete(key);
+        }
     }
 }

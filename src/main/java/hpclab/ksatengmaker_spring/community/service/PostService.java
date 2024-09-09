@@ -37,4 +37,6 @@ public interface PostService {
     String getDecreasePostVoteCount(Long postId);
 
     void updatePostRank();
+
+    void resetPostView();
 }
