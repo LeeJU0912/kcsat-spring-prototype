@@ -39,7 +39,7 @@
 
             while(true) {
                 const mainTextElement = document.getElementById("mainText" + idx);
-                if (!getData) break;
+                if (!mainTextElement) break;
 
                 const mainText = mainTextElement.innerText
                 mainTextElement.innerText = mainText.length >= 70 ? mainText.substring(0, 70) + "..." : mainText;
