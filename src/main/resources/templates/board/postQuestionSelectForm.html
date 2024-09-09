@@ -14,6 +14,7 @@
             <div th:each="bookQuestion : ${bookQuestions}">
                 <label for="qId" th:text="${bookQuestion.question.id}">Item ID</label><input type="radio" name="qId" id="qId"/>
                 <div th:text="${bookQuestion.question.title}">Item Name</div>
+                <div id="mainText" th:text="${bookQuestion.question.mainText}">Item Name</div>
                 <div th:text="'문제 유형 : ' + ${bookQuestion.question.type}">Item Type</div>
                 <div th:text="'문제 생성일 : ' + ${bookQuestion.question.createdDate}">Item CreatedDate</div>
                 <div th:text="'문제 공유 수 : ' + ${bookQuestion.question.shareCounter}">Item ShareCounter</div>
@@ -33,11 +34,10 @@
     <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script type="text/javascript">
-        function submitQuestion(qId) {
-            console.log(qId)
-            document.getElementById("qId").value = qId;
-            document.getElementById("questionUploadForm").submit();
-        }
+        const mainText = document.getElementById("mainText").innerText
+        const truncated = mainText.substring(0, 10) + "..."
+
+        document.getElementById("mainText").innerText = truncated
     </script>
 
 </div> <!-- /container -->
