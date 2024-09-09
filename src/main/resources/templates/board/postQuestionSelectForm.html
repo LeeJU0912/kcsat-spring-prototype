@@ -11,10 +11,10 @@
     <!-- 선택된 항목의 세부 정보를 표시 -->
     <div th:if="${bookQuestions != null}">
         <form id="questionUploadForm" method="post" action="/board/post/uploadQuestion">
-            <div th:each="bookQuestion : ${bookQuestions}">
+            <div th:each="bookQuestion, info : ${bookQuestions}">
                 <label for="qId" th:text="${bookQuestion.question.id}">Item ID</label><input type="radio" name="qId" id="qId"/>
                 <div th:text="${bookQuestion.question.title}">Item Name</div>
-                <div id="mainText" th:text="${bookQuestion.question.mainText}">Item Name</div>
+                <div th:id="'mainText'+${info.index}" th:text="${bookQuestion.question.mainText}">Item Name</div>
                 <div th:text="'문제 유형 : ' + ${bookQuestion.question.type}">Item Type</div>
                 <div th:text="'문제 생성일 : ' + ${bookQuestion.question.createdDate}">Item CreatedDate</div>
                 <div th:text="'문제 공유 수 : ' + ${bookQuestion.question.shareCounter}">Item ShareCounter</div>
@@ -34,10 +34,21 @@
     <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script type="text/javascript">
-        const mainText = document.getElementById("mainText").innerText
-        const truncated = mainText.substring(0, 40) + "..."
+        document.addEventListener("DOMContentLoaded", function () {
+            let idx = 0;
 
-        document.getElementById("mainText").innerText = truncated
+            while(true) {
+                const getData = document.getElementById("mainText" + idx);
+                if (!getData) break;
+
+                const mainText = getData.innerText
+                document.getElementById("mainText").innerText = mainText.substring(0, 40) + "..."
+
+                idx++;
+            }
+
+        })
+
     </script>
 
 </div> <!-- /container -->
