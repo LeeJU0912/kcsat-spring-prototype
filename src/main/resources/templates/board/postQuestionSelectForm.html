@@ -11,19 +11,13 @@
     <!-- 선택된 항목의 세부 정보를 표시 -->
     <div th:if="${bookQuestions != null}">
         <form id="questionUploadForm" method="post" action="/board/post/uploadQuestion">
-            <table>
-                <tbody>
-                    <tr th:each="bookQuestion : ${bookQuestions}">
-                        <td>
-                            <input type="radio" name="qId" id="qId" th:value="${bookQuestion.question.id}"/>
-                            <p th:value="'문제 유형 : ' + ${bookQuestion.question.type}"></p>
-                            <p th:value="'문제 생성일 : ' + ${bookQuestion.question.createdDate}"></p>
-                            <p th:value="'문제 공유 수 : ' + ${bookQuestion.question.shareCounter}"></p>
-                        </td>
-                        <td th:text="${bookQuestion.question.title}">Item Name</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div th:each="bookQuestion : ${bookQuestions}">
+                <label for="qId" th:value="${bookQuestion.question.id}">Item ID</label><input type="radio" name="qId" id="qId"/>
+                <div th:text="${bookQuestion.question.title}">Item Name</div>
+                <div th:value="'문제 유형 : ' + ${bookQuestion.question.type}">Item Type</div>
+                <div th:value="'문제 생성일 : ' + ${bookQuestion.question.createdDate}">Item CreatedDate</div>
+                <div th:value="'문제 공유 수 : ' + ${bookQuestion.question.shareCounter}">Item ShareCounter</div>
+            </div>
 
             <button type="submit">제출</button>
         </form>
