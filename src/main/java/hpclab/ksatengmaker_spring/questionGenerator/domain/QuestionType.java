@@ -9,14 +9,14 @@ public enum QuestionType {
     PURPOSE("글의목적"),
     INFO_UNMATCH("안내문불일치"),
     ORDERING("글의순서"),
-    FEELING_CHANGE("심경변화"),
-    TARGET_UNMATCH("대상정보불일"),
     MAIN_IDEA("글의요지"),
     TITLE("글의제목"),
     INSERT_SENT("문장삽입"),
     BLANK("빈칸"),
     TOPIC("글의주제"),
-    INFO_MATCH("안내문일치");
+    INFO_MATCH("안내문일치"),
+    TARGET_UNMATCH("대상정보불일치"),
+    FEELING_CHANGE("심경변화");
 
     private final String krName;
 
