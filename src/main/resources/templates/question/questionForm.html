@@ -29,11 +29,11 @@
             <input type="text" name="mainText" class="form-control" id="mainText" placeholder="생성하고자 하는 영어 지문을 입력하세요.">
         </div>
 
-        <button type="submit" class="btn btn-primary">GPT로 문제 생성</button>
-        <button type="submit" class="btn btn-primary" onclick="changeURL('question/createRandom/GPT')">GPT로 기출 랜덤 문제 생성</button>
+<!--        <button type="submit" class="btn btn-primary">GPT로 문제 생성</button>-->
+<!--        <button type="submit" class="btn btn-primary" onclick="changeURL('question/createRandom/GPT')">GPT로 기출 랜덤 문제 생성</button>-->
         <br>
-        <button type="submit" class="btn btn-primary" onclick="changeURL('/question/create/LLaMA')">LLaMA3 Custom으로 문제 생성</button>
-        <button type="submit" class="btn btn-primary" onclick="changeURL('/question/createRandom/LLaMA')">LLaMA3 Custom으로 기출 랜덤 문제 생성</button>
+        <button type="submit" class="btn btn-primary" onclick="changeURL('/question/create/LLaMA')">AI 문제 생성</button>
+        <button type="submit" class="btn btn-primary" onclick="changeURL('/question/createRandom/LLaMA')">AI 문제 무작위 생성</button>
     </form>
     <br/>
     <div th:replace="~{fragments/footer :: footer}"></div>
