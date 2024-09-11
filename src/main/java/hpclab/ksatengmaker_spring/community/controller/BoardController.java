@@ -11,7 +11,7 @@ import hpclab.ksatengmaker_spring.questionGenerator.domain.Question;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.QuestionType;
 import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseForm;
 import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionJPARepository;
-import hpclab.ksatengmaker_spring.questionGenerator.service.QuestionService;
+import hpclab.ksatengmaker_spring.questionGenerator.service.QuestionServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -45,7 +45,7 @@ public class BoardController {
     private final PostService postService;
     private final MemberService memberService;
     private final CommentService commentService;
-    private final QuestionService questionService;
+    private final QuestionServiceImpl questionService;
     private final BookQuestionService bookQuestionService;
     private final QuestionJPARepository questionJPARepository;
     private final BookService bookService;

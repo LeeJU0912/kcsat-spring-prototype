@@ -7,8 +7,7 @@ import hpclab.ksatengmaker_spring.questionGenerator.domain.QuestionType;
 import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseRawForm;
 import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionSubmitRawForm;
 import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionSubmitForm;
-import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseForm;
-import hpclab.ksatengmaker_spring.questionGenerator.service.QuestionService;
+import hpclab.ksatengmaker_spring.questionGenerator.service.QuestionServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -21,7 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class QuestionController {
 
-    private final QuestionService questionService;
+    private final QuestionServiceImpl questionService;
     private final BookQuestionService bookQuestionService;
 
     // 양식 화면 로드

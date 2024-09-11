@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: header}">
+  <title>Hello</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+
+<div class="container">
+
+  <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
+
+  <div th:each="question : ${rankedQuestions}">
+    <div th:text="${question.QId}">문제 ID</div>
+    <div th:href="@{/weekly/{id}(id=${question.QId})}" th:text="${question.title}">문제 제목</div>
+    <div th:text="${question.mainText}">문제 본문</div>
+    <div th:text="${question.shareCounter}">문제 공유 카운트</div>
+  </div>
+
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+</div> <!-- /container -->
+
+</body>
+</html>

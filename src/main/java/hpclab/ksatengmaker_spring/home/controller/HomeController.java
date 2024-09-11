@@ -17,4 +17,10 @@ public class HomeController {
         log.info("home controller");
         return "home";
     }
+
+    @GetMapping("/credit")
+    public String credit() {
+        log.info("credit");
+        return "credit";
+    }
 }

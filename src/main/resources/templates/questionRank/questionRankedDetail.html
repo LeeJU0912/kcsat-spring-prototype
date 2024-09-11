@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: header}">
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+
+<div class="container">
+
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
+
+    <div class="form-group">
+        <p type="text" th:text="${rankedQuestion.questionType}" class="text-xl-left" id="questionType"></p>
+        <h3 type="text" th:text="${rankedQuestion.title}" class="text-xl-left" id="question"></h3>
+        <p type="text" th:text="${rankedQuestion.mainText}" class="text-xl-left" id="mainText"></p>
+
+        <div th:each="choice : ${rankedQuestion.choices}">
+            <b type="text" th:text="${choice}" class="text-xl-left" id="choice"></b>
+        </div>
+    </div>
+
+    <a th:href="@{/weekly/{id}/save(id=${id})}" class="btn btn-outline-warning">saveQuestion</a>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</div> <!-- /container -->
+
+</body>
+</html>
