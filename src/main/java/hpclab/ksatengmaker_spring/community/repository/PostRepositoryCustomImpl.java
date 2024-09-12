@@ -61,7 +61,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         List<Post> result = queryFactory.selectFrom(post)
                 .where(post.isHotPost.isTrue())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageNumber())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         return new PageImpl<>(result, pageable, result.size());
