@@ -72,6 +72,27 @@ public class BoardController {
         return "board/boardForm";
     }
 
+    @GetMapping("/board/hot")
+    public String hotBoard(Model model, @PageableDefault(size = 10, sort = "pId", direction = Sort.Direction.DESC) Pageable pageable, String keyword, QuestionType type) {
+
+        /**
+         * 기능 구현 :
+         * 1. 한 페이지 당 10개의 게시물 보이기 (게시글 제목, 본문 프리뷰)
+         * 2.
+         */
+
+        model.addAttribute("questionType", questionService.questionTypeList());
+
+        if ((keyword == null || keyword.isEmpty()) && type == null) {
+            model.addAttribute("boardList", postService.getHotPostList(pageable));
+        }
+        else {
+            model.addAttribute("boardList", postService.getFindHotPostList(pageable, keyword, type));
+        }
+
+        return "board/hotBoardForm";
+    }
+
     @GetMapping("/board/post/{id}")
     public String board(@PathVariable Long id, Model model) {
         PostDto post = postService.getPost(id);

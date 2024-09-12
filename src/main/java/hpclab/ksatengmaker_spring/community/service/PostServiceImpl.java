@@ -93,7 +93,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<PostDto> getFindPostList(Pageable pageable, String keyword, QuestionType type) {
-        Page<Post> posts = postRepository.findByQuestionTypeAndTitle(pageable, keyword, type);
+        Page<Post> posts = postRepository.findPostsByQuestionTypeAndTitle(pageable, keyword, type);
+        return makePostPageDTO(pageable, posts);
+    }
+
+    @Override
+    public Page<PostDto> getHotPostList(Pageable pageable) {
+        Page<Post> hotPosts = postRepository.findHotPosts(pageable);
+        return makePostPageDTO(pageable, hotPosts);
+    }
+
+    @Override
+    public Page<PostDto> getFindHotPostList(Pageable pageable, String keyword, QuestionType type) {
+        Page<Post> posts = postRepository.findHotPostsByQuestionTypeAndTitle(pageable, keyword, type);
         return makePostPageDTO(pageable, posts);
     }
 
@@ -180,7 +192,17 @@ public class PostServiceImpl implements PostService {
             redisTemplate.opsForValue().set(user, "1");
         }
 
-        return redisTemplate.opsForValue().get(upVote);
+        String nowVote = redisTemplate.opsForValue().get(upVote);
+
+        if (Integer.parseInt(nowVote) >= 1) {
+            Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("핫게 등록 실패."));
+
+            post.gettingHot();
+
+            postRepository.save(post);
+        }
+
+        return nowVote;
     }
 
 

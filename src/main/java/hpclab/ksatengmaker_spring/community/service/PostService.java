@@ -16,6 +16,10 @@ public interface PostService {
 
     Page<PostDto> getFindPostList(Pageable pageable, String keyword, QuestionType type);
 
+    Page<PostDto> getHotPostList(Pageable pageable);
+
+    Page<PostDto> getFindHotPostList(Pageable pageable, String keyword, QuestionType type);
+
     PostDto getPost(Long postId);
 
     Long updatePost(Long postId, PostWriteForm postWriteForm);

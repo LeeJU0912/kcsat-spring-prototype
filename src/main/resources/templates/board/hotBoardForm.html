@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
+
+    <form th:action="@{/board/hot}" method="get" class="d-flex">
+        <div class="form-group">
+            <label for="type">문제 유형 선택</label>
+            <select name="type" id="type" class="form-control">
+                <option value="">선택 안함</option>
+                <option th:each="question : ${questionType}"
+                        th:value="${question.getKey()}"
+                        th:text="${question.getValue()}" />
+            </select>
+        </div>
+
+        <input class="form-control me-sm-2" type="text" placeholder="Search" name="keyword">
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+    </form>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th class="col-md-1">번호</th>
+            <th class="col-md-1">제목</th>
+            <th class="col-md-1">공유 문제 타입</th>
+            <th class="col-md-1">작성자</th>
+            <th class="col-md-1">작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${boardList}">
+            <td th:text="${board.PId}"></td>
+            <td><a th:href="@{/board/post/{id}(id=${board.PId})}" th:text="${board.title}"></a></td>
+            <td th:text="${board.questionType}"></td>
+            <td th:text="${board.username}"></td>
+            <td th:text="${board.postDate} ? ${#temporals.format(board.postDate,'yyyy-MM-dd HH:mm')} : ${board.postDate}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${!boardList.isEmpty()}">
+        <ul class="pagination"
+            th:with="
+                pageNumber = ${boardList.pageable.pageNumber},
+                pageSize = ${boardList.pageable.pageSize},
+                totalPages = ${boardList.totalPages},
+                startPage = ${T(java.lang.Math).floor(pageNumber / pageSize) * pageSize + 1},
+                tempEndPage = ${startPage + pageSize - 1},
+                endPage = (${tempEndPage < totalPages ? tempEndPage : totalPages})">
+
+            <li th:classappend="${boardList.first} ? 'disabled'" class="page-item">
+                <a class="page-link" th:if="${param.keyword == null}" th:href="${boardList.first} ? '#' : @{/board(page=${pageNumber - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+                <a class="page-link" th:if="${param.keyword != null}" th:href="${boardList.first} ? '#' : @{/board(page=${pageNumber - 1}, keyword=${param.keyword})}" aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+
+            <li th:each="page: ${#numbers.sequence(startPage, endPage)}" th:classappend="${page == pageNumber + 1} ? 'active'" class="page-item">
+                <a th:text="${page}" th:if="${param.keyword == null}" class="page-link" th:href="@{/board(page=${page - 1})}"></a>
+                <a th:text="${page}" th:if="${param.keyword != null}" class="page-link" th:href="@{/board(page=${page - 1}, keyword=${param.keyword})}"></a>
+            </li>
+
+            <li th:classappend="${boardList.last} ? 'disabled'" class="page-item">
+                <a class="page-link" th:if="${param.keyword == null}" th:href="${boardList.last} ? '#' : @{/board(page=${pageNumber + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+                <a class="page-link" th:if="${param.keyword != null}" th:href="${boardList.last} ? '#' : @{/board(page=${pageNumber + 1}, keyword=${param.keyword})}" aria-label="Next">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <button type="submit" class="btn btn-primary" onclick="location.href='/board/post/new'">글 쓰기</button>
+
+    <br>
+
+    <br/>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</div> <!-- /container -->
+
+</body>
+</html>

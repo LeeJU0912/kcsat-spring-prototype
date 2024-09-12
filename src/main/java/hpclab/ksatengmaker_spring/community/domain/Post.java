@@ -42,6 +42,8 @@ public class Post extends BaseTimeEntity {
 
     private QuestionType questionType;
 
+    private Boolean isHotPost;
+
     @ManyToOne
     @JoinColumn(name = "QUESTION_ID")
     private Question question;
@@ -49,5 +51,9 @@ public class Post extends BaseTimeEntity {
     public void update(String postTitle, String postContent) {
         this.postTitle = postTitle;
         this.postContent = postContent;
+    }
+
+    public void gettingHot() {
+        this.isHotPost = true;
     }
 }

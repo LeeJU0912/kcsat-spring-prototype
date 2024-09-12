@@ -34,6 +34,9 @@ public class QuestionRankServiceImpl implements QuestionRankService {
 //            String key = new String(keys.next());
 //            redisTemplate.delete(key);
 //        }
+
+
+
     }
 
     @Override
