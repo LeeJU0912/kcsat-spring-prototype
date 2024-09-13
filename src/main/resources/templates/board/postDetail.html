@@ -79,6 +79,12 @@
                         <textarea class="form-control" id="mainText" name="mainText" rows="8" disabled>[[${post.question.mainText}]]</textarea>
                     </div>
                     <div class="mb-3">
+                        <label for="choices" class="form-label">보기</label>
+                        <div id="choices" class="form-control" th:each="choice : ${post.question.choices}" disabled>
+                            <p type="text" th:text="${choice}"></p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <label for="shareCounter" class="form-label">문제 공유 수</label>
                         <input type="text" class="form-control" id="shareCounter" name="shareCounter" th:value="${post.question.shareCounter}" disabled>
                     </div>
