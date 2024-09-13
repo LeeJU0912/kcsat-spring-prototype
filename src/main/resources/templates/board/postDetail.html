@@ -81,7 +81,7 @@
                     <div class="mb-3">
                         <label for="choices" class="form-label">보기</label>
                         <div id="choices" class="form-control" th:each="choice : ${post.question.choices}" disabled>
-                            <p type="text" th:text="${choice}"></p>
+                            <p type="text" th:text="${choice.choice}"></p>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -101,8 +101,9 @@
                 <div class="card-body">
                     <form th:action="@{/board/post/{id}/comment(id=${id})}" th:method="post">
                         <div class="form-group" style="margin-bottom: 10px;">
-                            <input type="hidden" name="idx" th:value="*{idx}" />
-                            <textarea name="content" class="form-control" rows="3"></textarea>
+                            <label>
+                                <textarea name="content" class="form-control" rows="3"></textarea>
+                            </label>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
