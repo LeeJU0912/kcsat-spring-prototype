@@ -54,8 +54,6 @@
                     <a th:href="@{/board/post/{id}/postDownVote(id=${id})}" class="btn btn-sm btn-outline-info">unlike</a>
                 </div>
 
-                <a href="/board" class="btn btn-outline-secondary">list</a>
-
                 <th:block th:if="${post.email == #authentication.principal.username}">
                     <a th:href="@{/board/post/{id}/update(id=${id})}" class="btn btn-outline-warning">modify</a>
                     <a th:href="@{/board/post/{id}/remove(id=${id})}" class="btn btn-outline-danger" onclick="return confirm('삭제하시겠습니까?')">remove</a>
@@ -76,7 +74,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="mainText" class="form-label">본문</label>
-                        <textarea class="form-control" id="mainText" name="mainText" rows="8" disabled>[[${post.question.mainText}]]</textarea>
+                        <textarea class="form-control" id="mainText" name="mainText" rows="12" disabled>[[${post.question.mainText}]]</textarea>
                     </div>
                     <div class="mb-3">
                         <label for="choices" class="form-label">보기</label>
@@ -145,6 +143,8 @@
                 </div>
             </div>
         </div>
+
+        <a href="/board" class="btn btn-outline-secondary float-right">list</a>
     </div>
 
     <br><br/>
