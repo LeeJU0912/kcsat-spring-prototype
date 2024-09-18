@@ -55,6 +55,7 @@ public class BookQuestionServiceImpl implements BookQuestionService {
 
         if (redisTemplate.opsForValue().get("question:" + email + ":isSaved:" + qId) == null) {
             redisTemplate.opsForValue().set("question:" + email + ":isSaved:" + qId, "1");
+            question.upShareCounter();
             bookQuestionRepository.save(new BookQuestion(book, question));
         }
 

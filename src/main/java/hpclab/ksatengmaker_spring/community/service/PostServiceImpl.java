@@ -80,7 +80,6 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new UsernameNotFoundException("post not found"));
 
         Question question = post.getQuestion();
-        question.upShareCounter();
         bookQuestionService.saveQuestion(question.getId());
         questionJPARepository.save(question);
     }

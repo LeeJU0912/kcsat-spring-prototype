@@ -32,7 +32,7 @@
             <input type="hidden" name="choices" th:value="${choice}" />
         </div>
 
-        <button type="submit" class="btn btn-outline-primary" name="action" value="save">내 문제집 저장</button>
+        <button id="saveQuestion" onclick="disableButton()" type="submit" class="btn btn-outline-primary" name="action" value="save">내 문제집 저장</button>
     </form>
 
 <!--    <div>-->
@@ -40,6 +40,14 @@
 <!--        <button type="button" class="btn btn-outline-primary" onclick="location.href='/question/result/save'">내 문제집 저장</button>-->
 <!--        <button type="button" class="btn btn-outline-primary" onclick="location.href='/members/new'">PDF 저장</button>-->
 <!--    </div>-->
+
+
+    <script>
+        function disableButton() {
+            let button = document.getElementById("saveQuestion");
+            button.disabled = true;  // 버튼 비활성화
+        }
+    </script>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
 
