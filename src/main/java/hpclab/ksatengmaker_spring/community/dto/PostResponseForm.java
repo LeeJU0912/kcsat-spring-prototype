@@ -8,9 +8,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 @AllArgsConstructor
-public class PostDto {
+public class PostResponseForm {
 
     private Long pId;
 
@@ -26,7 +25,8 @@ public class PostDto {
 
     private Question question;
 
-    public PostDto(Post post) {
+    @Builder
+    public PostResponseForm(Post post) {
         this.pId = post.getPId();
         this.title = post.getPostTitle();
         this.content = post.getPostContent();

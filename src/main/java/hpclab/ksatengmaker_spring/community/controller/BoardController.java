@@ -95,7 +95,7 @@ public class BoardController {
 
     @GetMapping("/board/post/{id}")
     public String board(@PathVariable Long id, Model model) {
-        PostDto post = postService.getPost(id);
+        PostResponseForm post = postService.getPost(id);
 
         List<CommentResponseForm> hotComments = commentService.getHotComments(id);
         List<CommentResponseForm> comments = commentService.getComments(id);
@@ -149,7 +149,7 @@ public class BoardController {
     public String updateBoardForm(@PathVariable Long id, Model model, Authentication auth) {
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
 
-        PostDto post = postService.getPost(id);
+        PostResponseForm post = postService.getPost(id);
 
         if (!Objects.equals(userDetails.getUsername(), post.getEmail())) {
             return "redirect:/board/post";
@@ -172,7 +172,7 @@ public class BoardController {
     public String removeBoard(@PathVariable Long id, Authentication auth) {
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
 
-        PostDto post = postService.getPost(id);
+        PostResponseForm post = postService.getPost(id);
 
         if (!Objects.equals(userDetails.getUsername(), post.getEmail())) {
             return "redirect:/board";

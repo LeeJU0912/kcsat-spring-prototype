@@ -11,6 +11,6 @@ public interface QuestionService {
     String getRandomDefaultDataset();
     TreeMap<QuestionType, String> questionTypeList();
     String getDefinition(QuestionType type);
-    void saveQuestion(Question question);
+    Long saveQuestion(Question question);
     QuestionResponseRawForm getAIQuestion(QuestionSubmitForm data);
 }

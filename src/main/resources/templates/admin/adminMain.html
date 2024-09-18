@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
+
+    <div th:text="'회원가입 시기 : ' + ${member.createdDate}">회원가입 시기</div>
+    <div th:text="'MemberID : ' + ${member.id}">ID</div>
+    <div th:text="'Email : ' + ${member.email}">Email</div>
+    <div th:text="'닉네임 : ' + ${member.username}">닉네임</div>
+    <div><a th:href="@{/admin/members/{id}/posts(id=${member.id})}">작성글 보기</a></div>
+    <div><a th:href="@{/admin/members/{id}/comments(id=${member.id})}">작성 댓글 보기</a></div>
+
+    <br/>
+
+    <div th:replace="~{fragments/footer :: footer}" />
+</div> <!-- /container -->
+
+</body>
+</html>

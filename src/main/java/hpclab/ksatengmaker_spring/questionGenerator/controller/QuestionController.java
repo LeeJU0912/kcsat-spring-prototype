@@ -1,5 +1,7 @@
 package hpclab.ksatengmaker_spring.questionGenerator.controller;
 
+import hpclab.ksatengmaker_spring.admin.dto.UserRequestRequestForm;
+import hpclab.ksatengmaker_spring.admin.service.UserRequestService;
 import hpclab.ksatengmaker_spring.myBook.service.BookQuestionService;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.Choice;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.Question;
@@ -22,6 +24,7 @@ public class QuestionController {
 
     private final QuestionServiceImpl questionService;
     private final BookQuestionService bookQuestionService;
+    private final UserRequestService userRequestService;
 
     // 양식 화면 로드
     @GetMapping("/question")
@@ -120,5 +123,25 @@ public class QuestionController {
 
 
         return "redirect:/question/result";
+    }
+
+    @PostMapping("/question/result/junk")
+    public String filterQuestion(QuestionResponseRawForm form) {
+
+        Question question = Question
+                .builder()
+                .type(form.getQuestionType())
+                .title(form.getTitle())
+                .mainText(form.getMainText())
+                .shareCounter(0L)
+                .build();
+
+        question.setChoices(form.getChoices().stream().map(Choice::new).toList());
+
+        Long qId = questionService.saveQuestion(question);
+
+        userRequestService.saveUserRequest(userRequestService.getQuestionErrorForm(qId));
+
+        return "redirect:/question";
     }
 }

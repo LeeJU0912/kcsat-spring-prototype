@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: header}">
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+
+<div class="container">
+
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
+
+    <div class="jumbotron">
+        <h3 class="nav-item">운영자에게 편지 보내기</h3>
+        <form method="post" th:action="@{/giveIdea}">
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea name="content" class="form-control" id="content" placeholder="개선하면 좋아질 부분을 적어 주세요! ❤️" rows="5"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">제출</button>
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</div> <!-- /container -->
+
+</body>
+</html>

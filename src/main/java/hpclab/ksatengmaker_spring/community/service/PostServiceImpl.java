@@ -2,7 +2,7 @@ package hpclab.ksatengmaker_spring.community.service;
 
 import hpclab.ksatengmaker_spring.community.domain.Member;
 import hpclab.ksatengmaker_spring.community.domain.Post;
-import hpclab.ksatengmaker_spring.community.dto.PostDto;
+import hpclab.ksatengmaker_spring.community.dto.PostResponseForm;
 import hpclab.ksatengmaker_spring.community.dto.PostWriteForm;
 import hpclab.ksatengmaker_spring.community.repository.MemberRepository;
 import hpclab.ksatengmaker_spring.community.repository.PostRepository;
@@ -10,7 +10,6 @@ import hpclab.ksatengmaker_spring.myBook.service.BookQuestionService;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.Question;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.QuestionType;
 import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionJPARepository;
-import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,18 +18,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -85,43 +81,43 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<PostDto> getPostList(Pageable pageable) {
+    public Page<PostResponseForm> getPostList(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
         return makePostPageDTO(pageable, posts);
     }
 
     @Override
-    public Page<PostDto> getFindPostList(Pageable pageable, String keyword, QuestionType type) {
+    public Page<PostResponseForm> getFindPostList(Pageable pageable, String keyword, QuestionType type) {
         Page<Post> posts = postRepository.findPostsByQuestionTypeAndTitle(pageable, keyword, type);
         return makePostPageDTO(pageable, posts);
     }
 
     @Override
-    public Page<PostDto> getHotPostList(Pageable pageable) {
+    public Page<PostResponseForm> getHotPostList(Pageable pageable) {
         Page<Post> hotPosts = postRepository.findHotPosts(pageable);
         return makePostPageDTO(pageable, hotPosts);
     }
 
     @Override
-    public Page<PostDto> getFindHotPostList(Pageable pageable, String keyword, QuestionType type) {
+    public Page<PostResponseForm> getFindHotPostList(Pageable pageable, String keyword, QuestionType type) {
         Page<Post> posts = postRepository.findHotPostsByQuestionTypeAndTitle(pageable, keyword, type);
         return makePostPageDTO(pageable, posts);
     }
 
-    private Page<PostDto> makePostPageDTO(Pageable pageable, Page<Post> posts) {
-        List<PostDto> postDto = new ArrayList<>();
+    private Page<PostResponseForm> makePostPageDTO(Pageable pageable, Page<Post> posts) {
+        List<PostResponseForm> postResponseForm = new ArrayList<>();
 
         for (Post post : posts) {
-            postDto.add(new PostDto(post));
+            postResponseForm.add(new PostResponseForm(post));
         }
 
-        return new PageImpl<>(postDto, pageable, posts.getTotalElements());
+        return new PageImpl<>(postResponseForm, pageable, posts.getTotalElements());
     }
 
     @Override
-    public PostDto getPost(Long postId) {
+    public PostResponseForm getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("찾는 게시글이 없습니다."));
-        return new PostDto(post);
+        return new PostResponseForm(post);
     }
 
     @Override

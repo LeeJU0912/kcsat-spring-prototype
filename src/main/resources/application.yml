@@ -1,4 +1,10 @@
 spring:
+  security:
+    user:
+      name: HPCLab
+      password: student01
+      roles: ADMIN
+
   data:
     redis:
       host: 172.17.0.6

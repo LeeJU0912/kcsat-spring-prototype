@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
+
+    <div th:each="member : ${members}">
+        <div th:text="${member.id}">ID</div>
+        <div th:text="${member.email}">Email</div>
+        <div><a th:href="@{/admin/members/{id}(id=${member.id})}" th:text="${member.username}">회원 이름</a></div>
+    </div>
+
+    <br/>
+
+    <div th:replace="~{fragments/footer :: footer}" />
+</div> <!-- /container -->
+
+</body>
+</html>

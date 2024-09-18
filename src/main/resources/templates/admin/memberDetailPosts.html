@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
+
+    <div th:text="${username} + '의 작성 게시글입니다.'"></div>
+    <div th:each="post : ${posts}">
+        <div th:text="'PostID : ' + ${post.PId}"></div>
+        <div th:text="'작성일 : ' + ${post.postDate}"></div>
+        <div th:text="'제목 : ' + ${post.title}"></div>
+        <div th:text="'본문 : ' + ${post.content}"></div>
+        <div th:text="'첨부 문제 유형 : ' + ${post.questionType}"></div>
+    </div>
+
+    <a href="/admin/members" class="btn btn-outline-secondary float-right">회원 목록</a>
+
+    <br/>
+
+    <div th:replace="~{fragments/footer :: footer}" />
+</div> <!-- /container -->
+
+</body>
+</html>

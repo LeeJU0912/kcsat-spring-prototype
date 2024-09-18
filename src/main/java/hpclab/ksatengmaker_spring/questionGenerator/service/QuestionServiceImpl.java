@@ -46,8 +46,10 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void saveQuestion(Question question) {
-        questionJPARepository.save(question);
+    public Long saveQuestion(Question question) {
+        Question save = questionJPARepository.save(question);
+
+        return save.getId();
     }
 
     @Override

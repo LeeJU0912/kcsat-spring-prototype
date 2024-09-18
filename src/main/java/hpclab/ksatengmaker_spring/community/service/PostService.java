@@ -1,6 +1,6 @@
 package hpclab.ksatengmaker_spring.community.service;
 
-import hpclab.ksatengmaker_spring.community.dto.PostDto;
+import hpclab.ksatengmaker_spring.community.dto.PostResponseForm;
 import hpclab.ksatengmaker_spring.community.dto.PostWriteForm;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.QuestionType;
 import org.springframework.data.domain.Page;
@@ -12,15 +12,15 @@ public interface PostService {
 
     void saveQuestionFromPost(Long postId);
 
-    Page<PostDto> getPostList(Pageable pageable);
+    Page<PostResponseForm> getPostList(Pageable pageable);
 
-    Page<PostDto> getFindPostList(Pageable pageable, String keyword, QuestionType type);
+    Page<PostResponseForm> getFindPostList(Pageable pageable, String keyword, QuestionType type);
 
-    Page<PostDto> getHotPostList(Pageable pageable);
+    Page<PostResponseForm> getHotPostList(Pageable pageable);
 
-    Page<PostDto> getFindHotPostList(Pageable pageable, String keyword, QuestionType type);
+    Page<PostResponseForm> getFindHotPostList(Pageable pageable, String keyword, QuestionType type);
 
-    PostDto getPost(Long postId);
+    PostResponseForm getPost(Long postId);
 
     Long updatePost(Long postId, PostWriteForm postWriteForm);
 

@@ -34,14 +34,6 @@ public class MemberController {
         return "redirect:/login";
     }
 
-    @GetMapping("/members")
-    public String memberList(Model model) {
-        List<MemberResponseForm> members = memberService.findMembers();
-        model.addAttribute("members", members);
-
-        return "member/memberList";
-    }
-
     @GetMapping("/login")
     public String login() {
         return "member/loginForm";
