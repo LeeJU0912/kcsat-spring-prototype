@@ -41,10 +41,12 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authorize -> authorize
                         // 페이지 권한 설정
-                        .requestMatchers("/member/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/board/post/**").hasRole("USER")
                         .requestMatchers("/question/**").hasRole("USER")
                         .requestMatchers("/myBook/**").hasRole("USER")
+                        .requestMatchers("/giveHeart/**").hasRole("USER")
+                        .requestMatchers("/giveIdea/**").hasRole("USER")
                         .anyRequest().permitAll()
                 )
                 .formLogin((authorize) -> authorize

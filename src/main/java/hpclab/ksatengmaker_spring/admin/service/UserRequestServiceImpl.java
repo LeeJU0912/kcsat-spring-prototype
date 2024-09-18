@@ -68,12 +68,22 @@ public class UserRequestServiceImpl implements UserRequestService {
     public void saveUserRequest(UserRequestResponseForm form) {
         String email = getUserEmail();
 
-        userRequestRepository.save(UserRequest.builder()
-                .type(form.getType())
-                .content(form.getContent())
-                .username(email)
-                .qId(form.getQuestion().getId())
-                .build());
+        if (form.getQuestion() == null) {
+            userRequestRepository.save(UserRequest.builder()
+                    .type(form.getType())
+                    .content(form.getContent())
+                    .username(email)
+                    .qId(0L)
+                    .build());
+        }
+        else {
+            userRequestRepository.save(UserRequest.builder()
+                    .type(form.getType())
+                    .content(form.getContent())
+                    .username(email)
+                    .qId(form.getQuestion().getId())
+                    .build());
+        }
     }
 
     @Override
@@ -86,12 +96,25 @@ public class UserRequestServiceImpl implements UserRequestService {
         List<UserRequestResponseForm> forms = new ArrayList<>();
 
         for (UserRequest request : requests) {
-            UserRequestResponseForm form = UserRequestResponseForm.builder()
-                    .type(request.getType())
-                    .content(request.getContent())
-                    .member(member)
-                    .question(questionRepository.findById(request.getQId()).orElseThrow(() -> new IllegalArgumentException("없는 질문이에여")))
-                    .build();
+            UserRequestResponseForm form;
+
+            if (request.getQId() == 0L) {
+                form = UserRequestResponseForm.builder()
+                        .type(request.getType())
+                        .content(request.getContent())
+                        .member(member)
+                        .build();
+
+            }
+            else {
+                form = UserRequestResponseForm.builder()
+                        .type(request.getType())
+                        .content(request.getContent())
+                        .member(member)
+                        .question(questionRepository.findById(request.getQId()).orElseThrow(() -> new IllegalArgumentException("없는 질문이에여")))
+                        .build();
+
+            }
 
             forms.add(form);
         }
