@@ -22,6 +22,7 @@ public class UserRequest extends BaseTimeEntity {
 
     private RequestType type;
 
+    //너무 길면 짤라야댐
     private String content;
 
     private String username;

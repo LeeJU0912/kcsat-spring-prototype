@@ -88,15 +88,13 @@ public class UserRequestServiceImpl implements UserRequestService {
 
     @Override
     public List<UserRequestResponseForm> getUserRequests() {
-        String email = getUserEmail();
-
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("찾는 유저 업서요"));
-
         List<UserRequest> requests = userRequestRepository.findAll();
         List<UserRequestResponseForm> forms = new ArrayList<>();
 
         for (UserRequest request : requests) {
             UserRequestResponseForm form;
+
+            Member member = memberRepository.findByEmail(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("찾는 유저 업서요"));
 
             if (request.getQId() == 0L) {
                 form = UserRequestResponseForm.builder()
@@ -104,7 +102,6 @@ public class UserRequestServiceImpl implements UserRequestService {
                         .content(request.getContent())
                         .member(member)
                         .build();
-
             }
             else {
                 form = UserRequestResponseForm.builder()
@@ -113,7 +110,6 @@ public class UserRequestServiceImpl implements UserRequestService {
                         .member(member)
                         .question(questionRepository.findById(request.getQId()).orElseThrow(() -> new IllegalArgumentException("없는 질문이에여")))
                         .build();
-
             }
 
             forms.add(form);
