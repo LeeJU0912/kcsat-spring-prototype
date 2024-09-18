@@ -1,9 +1,7 @@
 spring:
-  security:
-    user:
-      name: HPCLab@csatmaker.site
-      password: student01
-      roles: ADMIN
+  sql:
+    init:
+      mode: always
 
   data:
     redis:

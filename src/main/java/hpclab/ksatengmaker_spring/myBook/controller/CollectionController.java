@@ -1,15 +1,9 @@
 package hpclab.ksatengmaker_spring.myBook.controller;
 
-import hpclab.ksatengmaker_spring.community.service.MemberService;
 import hpclab.ksatengmaker_spring.myBook.domain.Book;
-import hpclab.ksatengmaker_spring.myBook.domain.BookQuestion;
-import hpclab.ksatengmaker_spring.myBook.dto.BookResponseForm;
 import hpclab.ksatengmaker_spring.myBook.repository.BookQuestionRepository;
 import hpclab.ksatengmaker_spring.myBook.service.BookQuestionService;
 import hpclab.ksatengmaker_spring.myBook.service.BookService;
-import hpclab.ksatengmaker_spring.questionGenerator.domain.Choice;
-import hpclab.ksatengmaker_spring.questionGenerator.domain.Question;
-import hpclab.ksatengmaker_spring.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
