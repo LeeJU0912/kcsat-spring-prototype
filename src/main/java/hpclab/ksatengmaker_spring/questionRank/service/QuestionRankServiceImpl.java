@@ -31,7 +31,7 @@ public class QuestionRankServiceImpl implements QuestionRankService {
 
     private Double redditRankingAlgorithm(double up, LocalDateTime time) {
         double convertedTime = (double) time.atZone(ZoneOffset.UTC).toEpochSecond();
-        return log10(up) + sin(up) * convertedTime / 45000;
+        return log10(up) + convertedTime / 45000;
     }
 
     @Override
