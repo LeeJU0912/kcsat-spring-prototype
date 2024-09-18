@@ -12,7 +12,7 @@
   <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
 
   <div th:each="question, info : ${rankedQuestions}">
-    <div th:text="'인기 문제 ' + ${info.index} + '등!!'"></div>
+    <div th:text="'인기 문제 ' + ${info.count} + '등!!'"></div>
     <div th:text="${question.QId}">문제 ID</div>
     <div><a th:href="@{/weekly/{id}(id=${question.QId})}" th:text="${question.title}">문제 제목</a></div>
     <div th:text="${question.mainText}">문제 본문</div>
