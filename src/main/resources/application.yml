@@ -23,6 +23,7 @@ spring:
         show_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    defer-datasource-initialization: true
 
 logging:
   level:
