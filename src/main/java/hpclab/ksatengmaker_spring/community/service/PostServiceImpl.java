@@ -240,7 +240,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 매일 자정에 실행
+    @Scheduled(cron = "0 0 * * *", zone = "Asia/Seoul") // 매일 자정에 실행
     public void resetPostView() {
         log.info("cron reset post userViewChk");
 
