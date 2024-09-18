@@ -114,7 +114,7 @@ public class QuestionController {
 
         question.setChoices(form.getChoices().stream().map(Choice::new).toList());
 
-        bookQuestionService.saveQuestion(question);
+        bookQuestionService.saveFirstQuestion(question);
 
         redirectAttributes.addFlashAttribute("response", form);
 

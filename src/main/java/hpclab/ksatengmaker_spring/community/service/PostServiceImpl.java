@@ -81,7 +81,7 @@ public class PostServiceImpl implements PostService {
 
         Question question = post.getQuestion();
         question.upShareCounter();
-        bookQuestionService.saveQuestion(question);
+        bookQuestionService.saveQuestion(question.getId());
         questionJPARepository.save(question);
     }
 

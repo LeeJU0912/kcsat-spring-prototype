@@ -57,9 +57,7 @@ public class QuestionRankController {
 
     @GetMapping("/weekly/{qId}/save")
     public String weeklyQuestionPull(@PathVariable Long qId) {
-
-        Question question = questionJPARepository.findById(qId).orElseThrow(() -> new IllegalArgumentException("문제 참조 오류에여"));
-        bookQuestionService.saveQuestion(question);
+        bookQuestionService.saveQuestion(qId);
 
         return "redirect:/myBook";
     }

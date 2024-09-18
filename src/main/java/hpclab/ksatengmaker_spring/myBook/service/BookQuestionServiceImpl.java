@@ -27,18 +27,34 @@ public class BookQuestionServiceImpl implements BookQuestionService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public Long saveQuestion(Question question) {
+    public Long saveFirstQuestion(Question question) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String email = userDetails.getUsername();
 
-        Question save = questionJPARepository.save(question);
+        questionJPARepository.save(question);
 
         Book book = bookRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
-        if (redisTemplate.opsForValue().get("question:" + email + ":isSaved:" + save.getId()) == null) {
-            redisTemplate.opsForValue().set("question:" + email + ":isSaved:" + save.getId(), "1");
+        bookQuestionRepository.save(new BookQuestion(book, question));
+
+        return book.getId();
+    }
+
+    @Override
+    public Long saveQuestion(Long qId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+
+        Question question = questionJPARepository.findById(qId).orElseThrow(() -> new IllegalArgumentException("찾을 수 없는 문제에여."));
+
+        Book book = bookRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+
+        if (redisTemplate.opsForValue().get("question:" + email + ":isSaved:" + qId) == null) {
+            redisTemplate.opsForValue().set("question:" + email + ":isSaved:" + qId, "1");
             bookQuestionRepository.save(new BookQuestion(book, question));
         }
 
