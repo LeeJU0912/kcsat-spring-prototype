@@ -1,5 +1,7 @@
 package hpclab.ksatengmaker_spring.admin.controller;
 
+import hpclab.ksatengmaker_spring.admin.dto.UserRequestResponseForm;
+import hpclab.ksatengmaker_spring.admin.service.UserRequestService;
 import hpclab.ksatengmaker_spring.community.domain.Member;
 import hpclab.ksatengmaker_spring.community.dto.CommentResponseForm;
 import hpclab.ksatengmaker_spring.community.dto.MemberResponseForm;
@@ -21,6 +23,7 @@ public class AdminPageController {
 
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final UserRequestService userRequestService;
 
     @GetMapping("/admin")
     public String adminMain(Model model) {
@@ -29,6 +32,8 @@ public class AdminPageController {
 
     @GetMapping("/admin/requests")
     public String userRequests(Model model) {
+        model.addAttribute("userRequests", userRequestService.getUserRequests());
+
         return "admin/userRequests";
     }
 
@@ -57,6 +62,7 @@ public class AdminPageController {
         List<PostResponseForm> posts = member.getPosts().stream().map(x -> PostResponseForm.builder().post(x).build()).toList();
 
         model.addAttribute("username", member.getUsername());
+        model.addAttribute("mId", member.getMID());
         model.addAttribute("posts", posts);
 
         return "admin/memberDetailPosts";
@@ -69,6 +75,7 @@ public class AdminPageController {
         List<CommentResponseForm> comments = member.getComments().stream().map(x -> CommentResponseForm.builder().comment(x).build()).toList();
 
         model.addAttribute("username", member.getUsername());
+        model.addAttribute("mId", member.getMID());
         model.addAttribute("comments", comments);
 
         return "admin/memberDetailComments";

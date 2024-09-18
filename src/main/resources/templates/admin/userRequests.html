@@ -6,12 +6,23 @@
 <div class="container">
     <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
 
-    <div th:text="'회원가입 시기 : ' + ${member.createdDate}">회원가입 시기</div>
-    <div th:text="'MemberID : ' + ${member.id}">ID</div>
-    <div th:text="'Email : ' + ${member.email}">Email</div>
-    <div th:text="'닉네임 : ' + ${member.username}">닉네임</div>
-    <div><a th:href="@{/admin/members/{id}/posts(id=${member.id})}">작성글 보기</a></div>
-    <div><a th:href="@{/admin/members/{id}/comments(id=${member.id})}">작성 댓글 보기</a></div>
+    <div th:each="userRequest : ${userRequests}">
+        <div th:text="'건의 유형 : ' + ${userRequest.type}"></div>
+        <div th:text="'건의 글 : ' + ${userRequest.content}"></div>
+        <div th:text="'Email : ' + ${userRequest.member.email}"></div>
+        <div th:if="${userRequest.question} != null">
+            <div th:text="'QId : ' + ${userRequest.question.id}"></div>
+            <div th:text="'질문 : ' + ${userRequest.question.title}"></div>
+            <div th:text="'본문 : ' + ${userRequest.question.mainText}"></div>
+            <div th:each="choice : ${userRequest.question.choices}">
+                <div th:text="${choice.choice}"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <a href="/admin" class="btn btn-outline-secondary">관리자 화면</a>
 
     <br/>
 

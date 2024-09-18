@@ -12,6 +12,8 @@
         <div><a th:href="@{/admin/members/{id}(id=${member.id})}" th:text="${member.username}">회원 이름</a></div>
     </div>
 
+    <a href="/admin" class="btn btn-outline-secondary">관리자 화면</a>
+
     <br/>
 
     <div th:replace="~{fragments/footer :: footer}" />
