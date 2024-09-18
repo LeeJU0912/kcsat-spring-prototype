@@ -38,7 +38,7 @@ public class BookQuestionServiceImpl implements BookQuestionService {
         Book book = bookRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
         if (redisTemplate.opsForValue().get("question:" + email + ":isSaved:" + save.getId()) == null) {
-            redisTemplate.opsForValue().set("question:" + email + ":isSaved" + save.getId(), "1");
+            redisTemplate.opsForValue().set("question:" + email + ":isSaved:" + save.getId(), "1");
             bookQuestionRepository.save(new BookQuestion(book, question));
         }
 
