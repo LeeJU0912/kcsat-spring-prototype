@@ -1,6 +1,7 @@
 package hpclab.ksatengmaker_spring.questionRank.controller;
 
 import hpclab.ksatengmaker_spring.community.service.PostService;
+import hpclab.ksatengmaker_spring.myBook.service.BookQuestionService;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.Choice;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.Question;
 import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseForm;
@@ -22,6 +23,7 @@ public class QuestionRankController {
 
     private final QuestionRankService questionRankService;
     private final QuestionJPARepository questionJPARepository;
+    private final BookQuestionService bookQuestionService;
     private final PostService postService;
 
     @GetMapping("/weekly")
@@ -33,9 +35,9 @@ public class QuestionRankController {
         return "questionRank/questionRanking";
     }
 
-    @GetMapping("/weekly/{id}")
-    public String weeklyQuestionDetail(Model model, @PathVariable Long id) {
-        Question question = questionJPARepository.findById(id).orElseThrow(() -> new IllegalArgumentException("문제 참조 오류입니다아"));
+    @GetMapping("/weekly/{qId}")
+    public String weeklyQuestionDetail(Model model, @PathVariable Long qId) {
+        Question question = questionJPARepository.findById(qId).orElseThrow(() -> new IllegalArgumentException("문제 참조 오류입니다아"));
 
         QuestionResponseForm questionDTO = QuestionResponseForm.builder()
                 .qId(question.getId())
@@ -53,10 +55,11 @@ public class QuestionRankController {
         return "questionRank/questionRankedDetail";
     }
 
-    @GetMapping("/weekly/{id}/save")
-    public String weeklyQuestionPull(@PathVariable Long id) {
+    @GetMapping("/weekly/{qId}/save")
+    public String weeklyQuestionPull(@PathVariable Long qId) {
 
-        postService.saveQuestionFromPost(id);
+        Question question = questionJPARepository.findById(qId).orElseThrow(() -> new IllegalArgumentException("문제 참조 오류에여"));
+        bookQuestionService.saveQuestion(question);
 
         return "redirect:/myBook";
     }
