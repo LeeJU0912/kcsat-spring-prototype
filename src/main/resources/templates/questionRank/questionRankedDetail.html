@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <a th:href="@{/weekly/{id}/save(id=${id})}" class="btn btn-outline-warning">saveQuestion</a>
+    <a th:href="@{/weekly/{id}/save(id=${rankedQuestion.QId})}" class="btn btn-outline-warning">saveQuestion</a>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
 

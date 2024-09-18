@@ -30,9 +30,9 @@ public class BookQuestionServiceImpl implements BookQuestionService {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String email = userDetails.getUsername();
 
-        //question.upShareCounter();
-
-        questionJPARepository.save(question);
+        if (questionJPARepository.findById(question.getId()).isEmpty()) {
+            questionJPARepository.save(question);
+        }
 
         Book book = bookRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
