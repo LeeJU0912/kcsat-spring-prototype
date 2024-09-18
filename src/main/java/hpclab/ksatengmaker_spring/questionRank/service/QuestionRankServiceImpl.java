@@ -35,11 +35,11 @@ public class QuestionRankServiceImpl implements QuestionRankService {
     }
 
     @Override
-    @Scheduled(cron = "0 0/10 * * * *", zone = "Asia/Seoul") // 매 시간마다 실행
+    @Scheduled(cron = "0 0/10 * * * *", zone = "Asia/Seoul") // 10분마다 실행
     public void updateQuestionRank() {
         log.info("cron update question rank");
 
-        List<Question> questions = questionJPARepository.findAll();
+        List<Question> questions = questionJPARepository.findAllByShareCounterGreaterThan(0);
 
         questions.sort((o1, o2) -> Double.compare(redditRankingAlgorithm(Double.valueOf(o2.getShareCounter()), o2.getCreatedDate()), redditRankingAlgorithm(Double.valueOf(o1.getShareCounter()), o1.getCreatedDate())));
 
