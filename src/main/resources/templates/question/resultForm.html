@@ -17,7 +17,7 @@
     </div>
 
     <!-- form 생성 -->
-    <form th:action="@{/question/result/save}" method="post">
+    <form id="saveQuestionForm" th:action="@{/question/result/save}" method="post">
 
         <!-- var1 값 -->
         <input type="hidden" name="questionType" th:value="${response.questionType}" />
@@ -43,7 +43,7 @@
 
 
     <script>
-        document.getElementById("myForm").addEventListener("submit", function(event) {
+        document.getElementById("saveQuestionForm").addEventListener("submit", function(event) {
             let button = document.getElementById("saveQuestion");
             button.disabled = true;  // 폼 제출 후 버튼 비활성화
         });
