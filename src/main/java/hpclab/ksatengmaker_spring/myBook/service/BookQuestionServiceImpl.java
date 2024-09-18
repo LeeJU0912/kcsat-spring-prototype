@@ -10,6 +10,7 @@ import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionJPAReposi
 import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionRepository;
 import hpclab.ksatengmaker_spring.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +24,8 @@ public class BookQuestionServiceImpl implements BookQuestionService {
     private final BookQuestionRepository bookQuestionRepository;
     private final QuestionJPARepository questionJPARepository;
 
+    private final RedisTemplate<String, String> redisTemplate;
+
     @Override
     public Long saveQuestion(Question question) {
 
@@ -30,13 +33,14 @@ public class BookQuestionServiceImpl implements BookQuestionService {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String email = userDetails.getUsername();
 
-        if (questionJPARepository.findById(question.getId()).isEmpty()) {
-            questionJPARepository.save(question);
-        }
+        Question save = questionJPARepository.save(question);
 
         Book book = bookRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
-        bookQuestionRepository.save(new BookQuestion(book, question));
+        if (redisTemplate.opsForValue().get("question:" + email + ":isSaved:" + save.getId()) == null) {
+            redisTemplate.opsForValue().set("question:" + email + ":isSaved" + save.getId(), "1");
+            bookQuestionRepository.save(new BookQuestion(book, question));
+        }
 
         return book.getId();
     }
