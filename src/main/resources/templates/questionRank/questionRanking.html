@@ -11,9 +11,10 @@
 
   <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
 
-  <div th:each="question : ${rankedQuestions}">
+  <div th:each="question, idx : ${rankedQuestions}">
+    <div th:text="idx + '등!!!!!!'"></div>
     <div th:text="${question.QId}">문제 ID</div>
-    <div th:href="@{/weekly/{id}(id=${question.QId})}" th:text="${question.title}">문제 제목</div>
+    <div><a th:href="@{/weekly/{id}(id=${question.QId})}" th:text="${question.title}">문제 제목</a></div>
     <div th:text="${question.mainText}">문제 본문</div>
     <div th:text="${question.shareCounter}">문제 공유 카운트</div>
   </div>
