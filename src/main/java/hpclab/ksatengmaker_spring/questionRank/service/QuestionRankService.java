@@ -7,5 +7,5 @@ import java.util.List;
 public interface QuestionRankService {
     void updateQuestionRank();
 
-    List<QuestionResponseForm> getQuestions();
+    List<QuestionResponseForm> getRankedQuestions();
 }

@@ -96,6 +96,8 @@ public class BoardController {
     @GetMapping("/board/post/{id}")
     public String board(@PathVariable Long id, Model model) {
         PostDto post = postService.getPost(id);
+
+        List<CommentResponseForm> hotComments = commentService.getHotComments(id);
         List<CommentResponseForm> comments = commentService.getComments(id);
 
         List<String> commentsUpVoteCounter = new ArrayList<>();
@@ -117,6 +119,7 @@ public class BoardController {
         model.addAttribute("postUpVoteCounter", postUpVoteCounter);
         model.addAttribute("postDownVoteCounter", postDownVoteCounter);
 
+        model.addAttribute("hotComments", hotComments);
         model.addAttribute("comments", comments);
         model.addAttribute("commentsUpVoteCounter", commentsUpVoteCounter);
         model.addAttribute("commentsDownVoteCounter", commentsDownVoteCounter);

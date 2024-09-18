@@ -113,6 +113,37 @@
             <div class="card my-4" th:if="${comments.size()} != 0">
                 <h5 class="card-header">댓글</h5>
                 <div class="card-body">
+
+                    <p>인기 댓글</p>
+                    <div th:each="comment, stat : ${hotComments}">
+                        <div class="media mb-4">
+                            <div class="media-body">
+                                <div class="d-flex align-items-start">
+                                    <!--                                    <img class="d-flex mr-3 rounded-circle" th:src="${comment.getImageUrl()}" alt="User image" width="50">-->
+                                    <div>
+                                        <h5 class="mt-0" th:text="${comment.username}">User Name</h5>
+                                        <p th:text="${comment.content}" th:id="'comment-' + ${comment.CId}">Comment content</p>
+                                        <small class="text-muted" th:text="${#temporals.format(comment.createdDateTime, 'yyyy-MM-dd HH:mm')}">Comment Date</small>
+                                    </div>
+                                </div>
+                                <div th:if="${comment.email == #authentication.principal.username}">
+                                    <a th:href="@{/board/post/{id}/comment/{commentId}/remove(id=${id}, commentId=${comment.CId})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this comment?')">삭제</a>
+                                </div>
+
+                                <small class="text-muted" th:text="'좋아요 : ' + ${commentsUpVoteCounter.get(stat.index)}"></small>
+                                <div th:if="${comment.email != #authentication.principal.username}">
+                                    <a th:href="@{/board/post/{id}/comment/{cId}/commentUpVote(id=${id}, cId=${comment.CId})}" class="btn btn-sm btn-outline-info">좋아요</a>
+                                </div>
+
+                                <small class="text-muted" th:text="'싫어요 : ' + ${commentsDownVoteCounter.get(stat.index)}"></small>
+                                <div th:if="${comment.email != #authentication.principal.username}">
+                                    <a th:href="@{/board/post/{id}/comment/{cId}/commentDownVote(id=${id}, cId=${comment.CId})}" class="btn btn-sm btn-outline-info">싫어요</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>일반 댓글</p>
                     <div th:each="comment, stat : ${comments}">
                         <div class="media mb-4">
                             <div class="media-body">

@@ -16,8 +16,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.Math.min;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +47,59 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
 
         return comment.getCId();
+    }
+
+    static class CommentsSort implements Comparable<CommentsSort> {
+        Long counter;
+        Long cid;
+
+        Comment comment;
+
+        public CommentsSort(Long counter, Long cid, Comment comment) {
+            this.counter = counter;
+            this.cid = cid;
+            this.comment = comment;
+        }
+
+        @Override
+        public int compareTo(CommentsSort o) {
+
+            return (int) (o.counter - counter);
+        }
+    }
+
+    @Override
+    public List<CommentResponseForm> getHotComments(Long pId) {
+        List<CommentResponseForm> hotComments = new ArrayList<>();
+
+        Post post = postRepository.findById(pId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+
+        List<Comment> comments = commentRepository.findByPost(post);
+
+
+        List<CommentsSort> commentsSort = new ArrayList<>();
+        for (Comment comment : comments) {
+            String upVote = redisTemplate.opsForValue().get("comment:" + comment.getCId() + ":upVote");
+            String downVote = redisTemplate.opsForValue().get("comment:" + comment.getCId() + ":downVote");
+
+            Long calc = Long.parseLong(upVote) - Long.parseLong(downVote);
+
+            if (calc >= 2) {
+                commentsSort.add(new CommentsSort(calc, pId, comment));
+            }
+        }
+
+        Collections.sort(commentsSort);
+
+        for (int i = 0; i < min(commentsSort.size(), 3); i++) {
+            hotComments.add(
+                    CommentResponseForm.builder()
+                            .comment(commentsSort.get(i).comment)
+                            .build()
+            );
+        }
+
+        return hotComments;
     }
 
     @Override

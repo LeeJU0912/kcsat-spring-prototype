@@ -10,6 +10,8 @@ public interface CommentService {
 
     Long writeComment(CommentWriteForm commentWriteForm, Long id, String email);
 
+    List<CommentResponseForm> getHotComments(Long pId);
+
     List<CommentResponseForm> getComments(Long id);
 
     void deleteComment(Long id);
