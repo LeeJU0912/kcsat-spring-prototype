@@ -28,7 +28,7 @@ public class QuestionRankController {
     public String weeklyQuestionRank(Model model) {
 
         // weekly Question 5개 랭킹 순서대로 가져 와서 모델에 넣기.
-        model.addAttribute("rankedQuestions", questionRankService.getQuestions());
+        model.addAttribute("rankedQuestions", questionRankService.getRankedQuestions());
 
         return "questionRank/questionRanking";
     }
