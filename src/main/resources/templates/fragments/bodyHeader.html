@@ -3,8 +3,13 @@
 <div class="header" th:fragment="bodyHeader">
     <a href="/"><img class="rounded justify-content-sm-start" src="/image/logo.png" style="height: 70px" alt="logo"></a>
     <span class="h1 lead" style="margin-left: 10px">English Test Agent</span>
-    <span style="float: right"><a href="/giveHeart" style="font-size: large">❤</a>️</span>
+    <span style="float: right"><a href="/giveHeart" style="font-size: large; text-decoration: none">❤</a>️</span>
     <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <span sec:authorize="hasRole('ADMIN')">
+                <a class="nav-link" href="/admin">Admin 관리</a>
+            </span>
+        </li>
         <li class="nav-item"><a class="nav-link" href="/board/hot">HOT 게시판</a></li>
         <li class="nav-item"><a class="nav-link" href="/board">문제 공유 게시판</a></li>
         <li class="nav-item"><a class="nav-link" href="/weekly">주간 인기 문제</a></li>

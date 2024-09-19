@@ -13,7 +13,7 @@
         <div th:text="'내용 : ' + ${comment.content}"></div>
     </div>
 
-    <a th:href="/admin/members/${mId}" class="btn btn-outline-secondary">회원 상세 정보</a>
+    <a th:href="@{/admin/members/{id}(id=${mId})}" class="btn btn-outline-secondary">회원 상세 정보</a>
 
     <br/>
 
