@@ -1,15 +1,15 @@
 spring:
   sql:
     init:
-      mode: always
+      mode: never
 
   data:
     redis:
-      host: redis
+      host: 172.17.0.4
       port: 6379
 
   datasource:
-    url: jdbc:postgresql://postgres:5432/HPCLab
+    url: jdbc:postgresql://172.17.0.5:5432/HPCLab
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
