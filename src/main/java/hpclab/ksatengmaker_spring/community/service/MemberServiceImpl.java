@@ -13,6 +13,10 @@ import hpclab.ksatengmaker_spring.questionGenerator.domain.Choice;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.Question;
 import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseForm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     private final BookRepository bookRepository;
 
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public Long join(MemberForm memberForm) {
@@ -39,6 +44,8 @@ public class MemberServiceImpl implements MemberService {
                 .password(memberForm.getPassword())
                 .role(Role.ROLE_USER)
                 .build();
+
+        redisTemplate.opsForValue().set(memberForm.getEmail(), memberForm.getUsername());
 
         return memberRepository.save(member).getMID();
     }
@@ -56,5 +63,14 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return members;
+    }
+
+    @Override
+    public String findUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String email = userDetails.getUsername();
+
+        return redisTemplate.opsForValue().get(email);
     }
 }

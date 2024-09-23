@@ -11,4 +11,6 @@ public interface MemberService {
     Long join(MemberForm memberForm);
 
     List<MemberResponseForm> findMembers();
+
+    String findUsername();
 }
