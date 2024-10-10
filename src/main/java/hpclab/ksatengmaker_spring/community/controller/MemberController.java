@@ -1,19 +1,18 @@
 package hpclab.ksatengmaker_spring.community.controller;
 
 import hpclab.ksatengmaker_spring.community.dto.MemberForm;
-import hpclab.ksatengmaker_spring.community.dto.MemberResponseForm;
 import hpclab.ksatengmaker_spring.community.service.MemberService;
 import hpclab.ksatengmaker_spring.myBook.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.List;
-
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class MemberController {

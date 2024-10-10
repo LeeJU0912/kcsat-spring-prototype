@@ -1,7 +1,6 @@
 package hpclab.ksatengmaker_spring.questionGenerator.domain;
 
 import hpclab.ksatengmaker_spring.community.domain.BaseTimeEntity;
-import hpclab.ksatengmaker_spring.myBook.domain.BookQuestion;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,9 +33,13 @@ public class Question extends BaseTimeEntity {
     @JoinColumn(name = "QUESTION_ID")
     private List<Choice> choices;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ANSWER_ID")
-    private Answer answer;
+    private String answer;
+
+    @Column(length = 2048)
+    private String translation;
+
+    @Column(length = 2048)
+    private String explanation;
 
     public void upShareCounter() {
         shareCounter++;

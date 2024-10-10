@@ -8,7 +8,6 @@ import hpclab.ksatengmaker_spring.admin.repository.UserRequestRepository;
 import hpclab.ksatengmaker_spring.community.domain.Member;
 import hpclab.ksatengmaker_spring.community.repository.MemberRepository;
 import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionJPARepository;
-import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,15 +32,6 @@ public class UserRequestServiceImpl implements UserRequestService {
                 .type(RequestType.QUESTION_ERROR)
                 .content("QUESTION_ERROR")
                 .question(questionRepository.findById(qId).orElseThrow(() -> new IllegalArgumentException("찾는 문제 엄서여")))
-                .member(memberRepository.findByEmail(getUserEmail()).orElseThrow(() -> new UsernameNotFoundException("찾는 사람 엄서여")))
-                .build();
-    }
-
-    @Override
-    public UserRequestResponseForm getGoodSayingForm(UserRequestRequestForm form) {
-        return UserRequestResponseForm.builder()
-                .type(RequestType.GOOD_SAYING)
-                .content(form.getContent())
                 .member(memberRepository.findByEmail(getUserEmail()).orElseThrow(() -> new UsernameNotFoundException("찾는 사람 엄서여")))
                 .build();
     }

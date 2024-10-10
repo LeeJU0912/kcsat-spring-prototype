@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html lang="kr" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/default}">
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/header :: header}">
     <title>게시글 | [[${post.title}]]</title>
 </head>
 <body>
-<div class="container" layout:fragment="content">
+<div class="container">
     <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
 
-    <h1 class="mt-4">Board</h1>
     <div class="card mb-4">
         <div class="card-body">
             <form>
@@ -18,32 +15,23 @@
                     <input type="text" class="form-control" id="counter" name="counter" th:value="${postViewCounter}" disabled>
                 </div>
                 <div class="mb-3">
-                    <label for="title" class="form-label">제목</label>
-                    <input type="text" class="form-control" id="title" name="title" th:value="${post.title}" disabled>
+                    <label for="username" class="form-label">작성자</label> <input
+                        type="text" class="form-control" id="username" name="username"
+                        th:value="${post.username}" disabled>
                 </div>
-                <div class="mb-3">
-                    <label for="content" class="form-label">글 내용</label>
-                    <textarea class="form-control" id="content" name="content" style="height: 500px;" disabled>[[${post.content}]]</textarea>
-                </div>
-<!--                <div class="mb-3" th:if="${dto.imageUrls != null}">-->
-<!--                    <label class="form-label">Images</label>-->
-<!--                    <div>-->
-<!--                        <th:block th:each="imageUrl : ${dto.imageUrls}">-->
-<!--                            <img th:src="${imageUrl}" alt="Image" width="200px" height="200px">-->
-<!--                        </th:block>-->
-<!--                    </div>-->
-<!--                </div>-->
                 <div class="mb-3">
                     <label for="postDate" class="form-label">작성일</label> <input
                         type="text" class="form-control" id="postDate" name="postDate"
                         th:value="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}" disabled>
                 </div>
                 <div class="mb-3">
-                    <label for="username" class="form-label">작성자</label> <input
-                        type="text" class="form-control" id="username" name="username"
-                        th:value="${post.username}" disabled>
+                    <label for="title" class="form-label">제목</label>
+                    <input type="text" class="form-control" id="title" name="title" th:value="${post.title}" disabled>
                 </div>
-
+                <div class="mb-3">
+                    <label for="content" class="form-label">글 내용</label>
+                    <textarea class="form-control" id="content" name="content" style="height: 300px;" disabled>[[${post.content}]]</textarea>
+                </div>
                 <small class="text-muted" th:text="'좋아요 : ' + ${postUpVoteCounter}"></small>
                 <div th:if="${post.email != #authentication.principal.username}">
                     <a th:href="@{/board/post/{id}/postUpVote(id=${id})}" class="btn btn-sm btn-outline-info">추천</a>
@@ -65,10 +53,6 @@
             <th:block th:if="${post.question != null}">
                 <form>
                     <div class="mb-3">
-                        <label for="qId" class="form-label">문제 ID</label>
-                        <input type="text" class="form-control" id="qId" name="qId" th:value="${post.question.id}" disabled>
-                    </div>
-                    <div class="mb-3">
                         <label for="question" class="form-label">문제</label>
                         <input type="text" class="form-control" id="question" name="question" th:value="${post.question.title}" disabled>
                     </div>
@@ -78,8 +62,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="choices" class="form-label">보기</label>
-                        <div id="choices" class="form-control" th:each="choice : ${post.question.choices}" disabled>
-                            <p type="text" th:text="${choice.choice}"></p>
+                        <div id="choices" class="form-control" disabled>
+                            <div th:each="choice : ${post.question.choices}">
+                                <p type="text" th:text="${choice.choice}"></p>
+                            </div>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -119,7 +105,6 @@
                         <div class="media mb-4">
                             <div class="media-body">
                                 <div class="d-flex align-items-start">
-                                    <!--                                    <img class="d-flex mr-3 rounded-circle" th:src="${comment.getImageUrl()}" alt="User image" width="50">-->
                                     <div>
                                         <h5 class="mt-0" th:text="${comment.username}">User Name</h5>
                                         <p th:text="${comment.content}" th:id="'comment-' + ${comment.CId}">Comment content</p>
@@ -148,7 +133,6 @@
                         <div class="media mb-4">
                             <div class="media-body">
                                 <div class="d-flex align-items-start">
-<!--                                    <img class="d-flex mr-3 rounded-circle" th:src="${comment.getImageUrl()}" alt="User image" width="50">-->
                                     <div>
                                         <h5 class="mt-0" th:text="${comment.username}">User Name</h5>
                                         <p th:text="${comment.content}" th:id="'comment-' + ${comment.CId}">Comment content</p>

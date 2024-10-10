@@ -55,7 +55,7 @@ public class QBookQuestion extends EntityPathBase<BookQuestion> {
     public QBookQuestion(Class<? extends BookQuestion> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.book = inits.isInitialized("book") ? new QBook(forProperty("book")) : null;
-        this.question = inits.isInitialized("question") ? new hpclab.ksatengmaker_spring.questionGenerator.domain.QQuestion(forProperty("question"), inits.get("question")) : null;
+        this.question = inits.isInitialized("question") ? new hpclab.ksatengmaker_spring.questionGenerator.domain.QQuestion(forProperty("question")) : null;
     }
 
 }

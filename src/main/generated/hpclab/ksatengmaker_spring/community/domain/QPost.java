@@ -65,7 +65,7 @@ public class QPost extends EntityPathBase<Post> {
     public QPost(Class<? extends Post> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
-        this.question = inits.isInitialized("question") ? new hpclab.ksatengmaker_spring.questionGenerator.domain.QQuestion(forProperty("question"), inits.get("question")) : null;
+        this.question = inits.isInitialized("question") ? new hpclab.ksatengmaker_spring.questionGenerator.domain.QQuestion(forProperty("question")) : null;
     }
 
 }

@@ -1,17 +1,29 @@
 spring:
+
+  kafka:
+    bootstrap-servers: kafka.default.svc.cluster.local:9092
+    consumer:
+      group-id: HPCLab
+    producer:
+      batch-size: 1
+    properties:
+      session.timeout.ms: 600000
+
+
+
   sql:
     init:
       mode: never
 
   data:
     redis:
-      host: 172.17.0.4
+      host: ${REDIS_DATASOURCE_HOST}
       port: 6379
 
   datasource:
-    url: jdbc:postgresql://172.17.0.5:5432/HPCLab
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:

@@ -1,21 +1,24 @@
 package hpclab.ksatengmaker_spring.questionGenerator.controller;
 
-import hpclab.ksatengmaker_spring.admin.dto.UserRequestRequestForm;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import hpclab.ksatengmaker_spring.admin.service.UserRequestService;
+import hpclab.ksatengmaker_spring.kafka.KafkaService;
+import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionSubmitKafkaForm;
 import hpclab.ksatengmaker_spring.myBook.service.BookQuestionService;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.Choice;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.Question;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.QuestionType;
-import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseRawForm;
-import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionSubmitRawForm;
-import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionSubmitForm;
+import hpclab.ksatengmaker_spring.questionGenerator.dto.*;
 import hpclab.ksatengmaker_spring.questionGenerator.service.QuestionServiceImpl;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.concurrent.ExecutionException;
 
 @Controller
 @Slf4j
@@ -25,6 +28,7 @@ public class QuestionController {
     private final QuestionServiceImpl questionService;
     private final BookQuestionService bookQuestionService;
     private final UserRequestService userRequestService;
+    private final KafkaService kafkaService;
 
     // 양식 화면 로드
     @GetMapping("/question")
@@ -33,85 +37,124 @@ public class QuestionController {
         return "question/questionForm";
     }
 
-    @PostMapping("/question/createRandom/GPT")
-    public String createDefaultQuestionByGPT(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
+    @PostMapping("/createQuestionAllRandom/LLaMA")
+    public String createDemoQuestionByLLaMAFromServerOne(RedirectAttributes redirectAttributes) throws InterruptedException, JsonProcessingException, ExecutionException {
 
-        redirectAttributes.addFlashAttribute("response", getRandomQuestion(form, "/create/GPT"));
+        QuestionType questionType = QuestionType.getRandomQuestionType();
 
-        log.info("GPT-4o로 기출 문제 definition : {} 생성 완료.", form.getType());
+        String definition = questionService.getQuestionDefinition(questionType);
+        String mainText = questionService.getRandomDefaultDataset();
 
-        return "redirect:/question/result";
-    }
+        Long offsetGap = kafkaService.sendQuestionToKafka(new QuestionSubmitKafkaForm(definition, mainText));
 
-    @PostMapping("/question/create/GPT")
-    public String createQuestionByGPT(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
+        log.info("offsetGap : {}", offsetGap);
 
-        redirectAttributes.addFlashAttribute("response", getMyQuestion(form, "/create/GPT"));
+        QuestionResponseRawForm response = kafkaService.receiveQuestionFromKafka();
+        response.setQuestionType(questionType);
+        redirectAttributes.addFlashAttribute("response", response);
 
-        log.info("GPT-4o로 외부 지문 문제 definition : {} 생성 완료.", form.getType());
+        log.info("Kafka로 DEMO 문제 definition : {} 생성 완료.", response.getQuestionType());
 
         return "redirect:/question/result";
     }
 
     @PostMapping("/question/createRandom/LLaMA")
-    public String createDefaultQuestionByLLaMA(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
+    public String createDefaultQuestionByLLaMAFromServerOne(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) throws InterruptedException, JsonProcessingException, ExecutionException {
 
-        redirectAttributes.addFlashAttribute("response", getRandomQuestion(form, "/create/LLaMA"));
+        QuestionType questionType = QuestionType.valueOf(form.getType());
 
-        log.info("LLaMA로 기출 문제 definition : {} 생성 완료.", form.getType());
+        String definition = questionService.getQuestionDefinition(questionType);
+        String mainText = questionService.getRandomDefaultDataset();
+
+        Long offsetGap = kafkaService.sendQuestionToKafka(new QuestionSubmitKafkaForm(definition, mainText));
+
+        log.info("offsetGap : {}", offsetGap);
+
+        QuestionResponseRawForm response = kafkaService.receiveQuestionFromKafka();
+        response.setQuestionType(questionType);
+        redirectAttributes.addFlashAttribute("response", response);
+
+        log.info("Kafka로 기출 문제 definition : {} 생성 완료.", response.getQuestionType());
 
         return "redirect:/question/result";
     }
 
     @PostMapping("/question/create/LLaMA")
-    public String createQuestionByLLaMA(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) {
+    public String createQuestionByLLaMAFromServerOne(QuestionSubmitRawForm form, RedirectAttributes redirectAttributes) throws InterruptedException, JsonProcessingException, ExecutionException {
 
-        redirectAttributes.addFlashAttribute("response", getMyQuestion(form, "/create/LLaMA"));
+        QuestionType questionType = QuestionType.valueOf(form.getType());
 
-        log.info("LLaMA로 외부 지문 문제 definition : {} 생성 완료.", form.getType());
+        String definition = questionService.getQuestionDefinition(questionType);
+        String mainText = form.getMainText();
+
+        Long offsetGap = kafkaService.sendQuestionToKafka(new QuestionSubmitKafkaForm(definition, mainText));
+
+        log.info("offsetGap : {}", offsetGap);
+
+        QuestionResponseRawForm response = kafkaService.receiveQuestionFromKafka();
+        response.setQuestionType(questionType);
+        redirectAttributes.addFlashAttribute("response", response);
+
+        log.info("Kafka로 외부 지문 문제 definition : {} 생성 완료.", questionType);
 
         return "redirect:/question/result";
     }
 
-    private QuestionResponseRawForm getRandomQuestion(QuestionSubmitRawForm form, String requestLink) {
-        QuestionType questionType = QuestionType.valueOf(form.getType());
-
-        String definition = questionService.getDefinition(questionType);
-        String mainText = questionService.getRandomDefaultDataset();
-
-        // API 송신
-        return questionService.getAIQuestion(new QuestionSubmitForm(requestLink, questionType, definition, mainText));
-    }
-
-    private QuestionResponseRawForm getMyQuestion(QuestionSubmitRawForm form, String requestLink) {
-        QuestionType questionType = QuestionType.valueOf(form.getType());
-
-        String definition = questionService.getDefinition(questionType);
-
-        // API 송신
-        return questionService.getAIQuestion(new QuestionSubmitForm(requestLink, questionType, definition, form.getMainText()));
-    }
-
     @GetMapping("/question/result")
-    public String resultForm(@ModelAttribute("response") QuestionResponseRawForm response, Model model) {
+    public String questionResultForm(@ModelAttribute("response") QuestionResponseRawForm response, Model model) {
         model.addAttribute("response", response);
-        return "question/resultForm";
+        return "question/questionResultForm";
     }
 
-//    @PostMapping("/result/download/{fileName}")
-//    public String downloadFile(@PathVariable String fileName, Model model) {
-//
-//        return "question/resultForm";
-//    }
+    @PostMapping("/question/explanation/GPT")
+    public String createExplanationByGPTFromServerOne(QuestionResponseRawForm form, HttpSession session) {
+
+        ExplanationResponseRawForm explanation = questionService.getExplanationFromServerOne(form);
+
+        QuestionDto question = QuestionDto.builder()
+                .title(form.getTitle())
+                .questionType(form.getQuestionType())
+                .mainText(form.getMainText())
+                .answer(explanation.getAnswer())
+                .translation(explanation.getTranslation())
+                .explanation(explanation.getExplanation())
+                .build();
+
+        question.setChoices(form.getChoices().stream().toList());
+
+        Boolean saveComplete = (Boolean) session.getAttribute("saveComplete");
+        if (saveComplete == null || saveComplete == Boolean.TRUE) session.setAttribute("saveComplete", Boolean.FALSE);
+
+        session.setAttribute("response", question);
+
+        log.info("GPT 해설 definition : {} 생성 완료.", form.getQuestionType());
+
+        return "redirect:/question/explanation/result";
+    }
+
+    @GetMapping("/question/explanation/result")
+    public String explanationResultForm(HttpSession session, Model model) {
+
+        QuestionDto response = (QuestionDto) session.getAttribute("response");
+        Boolean saveComplete = (Boolean) session.getAttribute("saveComplete");
+
+        model.addAttribute("response", response);
+        model.addAttribute("saveComplete", saveComplete);
+
+        return "question/explanationResultForm";
+    }
 
     @PostMapping("/question/result/save")
-    public String saveQuestion(QuestionResponseRawForm form, RedirectAttributes redirectAttributes) {
+    public String saveQuestion(QuestionDto form, HttpSession session) {
 
         Question question = Question
                 .builder()
                 .type(form.getQuestionType())
                 .title(form.getTitle())
                 .mainText(form.getMainText())
+                .answer(form.getAnswer())
+                .translation(form.getTranslation())
+                .explanation(form.getExplanation())
                 .shareCounter(0L)
                 .build();
 
@@ -119,20 +162,23 @@ public class QuestionController {
 
         bookQuestionService.saveFirstQuestion(question);
 
-        redirectAttributes.addFlashAttribute("response", form);
+        session.setAttribute("response", form);
+        session.setAttribute("saveComplete", Boolean.TRUE);
 
-
-        return "redirect:/question/result";
+        return "redirect:/question/explanation/result";
     }
 
     @PostMapping("/question/result/junk")
-    public String filterQuestion(QuestionResponseRawForm form) {
+    public String filterQuestion(QuestionDto form) {
 
         Question question = Question
                 .builder()
                 .type(form.getQuestionType())
                 .title(form.getTitle())
                 .mainText(form.getMainText())
+                .answer(form.getAnswer())
+                .translation(form.getTranslation())
+                .explanation(form.getExplanation())
                 .shareCounter(0L)
                 .build();
 

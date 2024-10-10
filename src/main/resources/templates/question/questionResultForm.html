@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/header :: header}"></head>
-<body>
 
+<body>
 <div class="container">
     <div th:replace="~{fragments/bodyHeader :: bodyHeader}"></div>
 
@@ -17,7 +17,7 @@
     </div>
 
     <!-- form 생성 -->
-    <form id="saveQuestionForm" th:action="@{/question/result/save}" method="post">
+    <form id="saveQuestionForm" method="post">
 
         <!-- var1 값 -->
         <input type="hidden" name="questionType" th:value="${response.questionType}" />
@@ -32,36 +32,23 @@
             <input type="hidden" name="choices" th:value="${choice}" />
         </div>
 
-        <button type="submit" class="btn btn-outline-danger" onclick="changeURL('/question/result/junk')">문제 신고하기</button>
-        <button type="submit" class="btn btn-outline-primary" onclick="changeURL('/question/result/save')">내 문제집 저장</button>
+        <button type="submit" class="submitButton btn btn-outline-primary" onclick="loading('/question/explanation/GPT', this)">문제 해설 보기</button>
     </form>
-
-<!--    <div>-->
-<!--        <button type="button" class="btn btn-outline-primary" onclick="location.href='/members/new'">SNS 공유</button>-->
-<!--        <button type="button" class="btn btn-outline-primary" onclick="location.href='/question/result/save'">내 문제집 저장</button>-->
-<!--        <button type="button" class="btn btn-outline-primary" onclick="location.href='/members/new'">PDF 저장</button>-->
-<!--    </div>-->
-
-
-<!--    <script>-->
-<!--        document.getElementById("saveQuestionForm").addEventListener("submit", function(event) {-->
-<!--            let button = document.getElementById("saveQuestion");-->
-<!--            button.disabled = true;  // 폼 제출 후 버튼 비활성화-->
-<!--        });-->
-<!--    </script>-->
-
 
     <div th:replace="~{fragments/footer :: footer}"></div>
 
-    <script>
-        function changeURL(url) {
-            const form = document.getElementById("saveQuestionForm");
-            form.action = url;
-            form.submit();
-        }
-    </script>
-
 </div> <!-- /container -->
 
+
+<script>
+    function loading(url, button) {
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+
+        const form = document.getElementById("saveQuestionForm");
+        form.action = url;
+        form.submit();
+    }
+</script>
 </body>
 </html>

@@ -2,6 +2,8 @@ package hpclab.ksatengmaker_spring.questionGenerator.domain;
 
 import lombok.Getter;
 
+import java.util.Random;
+
 @Getter
 public enum QuestionType {
     BLANK_AB("빈칸A,B"),
@@ -19,8 +21,13 @@ public enum QuestionType {
     FEELING_CHANGE("심경변화");
 
     private final String krName;
+    private static final Random RANDOM = new Random();
 
     QuestionType(String krName) {
         this.krName = krName;
+    }
+
+    public static QuestionType getRandomQuestionType() {
+        return QuestionType.values()[RANDOM.nextInt(QuestionType.values().length)];
     }
 }

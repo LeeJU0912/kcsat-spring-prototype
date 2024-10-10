@@ -11,33 +11,22 @@
         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
     </form>
 
-    <table class="table table-bordered">
+    <table class="table table-sm table-striped">
         <thead>
         <tr>
-            <th class="col-md-1">번호</th>
-            <th class="col-md-1">문제 타입</th>
-            <th class="col-md-1">문제 제목</th>
-            <th class="col-md-1">문제 본문</th>
-            <th class="col-md-1">문제 보기</th>
-            <th class="col-md-1">저장일</th>
-            <th class="col-md-1">퍼간 횟수</th>
+            <th class="col-1">번호</th>
+            <th class="col-1">문제 타입</th>
+            <th class="col-5">문제 제목</th>
+            <th class="col-2">저장일</th>
+            <th class="col-1">퍼간 횟수</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="myQuestion, idx : ${myBook.bookQuestions}">
             <td th:text="${idx.count}"></td>
             <td th:text="${myQuestion.question.type.krName}"></td>
-            <td th:text="${myQuestion.question.title}"></td>
-            <td th:text="${myQuestion.question.mainText}"></td>
-<!--            <td th:text="${myQuestion.choices}"></td>-->
-            <td>
-                <ul>
-                    <li th:each="choice : ${myQuestion.question.choices}">
-                        <span th:text="${choice.choice}"></span>
-                    </li>
-                </ul>
-            </td>
-            <td th:text="${myQuestion.createdDate}"></td>
+            <td><a th:href="@{/myBook/{id}(id=${myQuestion.question.id})}" th:text="${myQuestion.question.title}"></a></td>
+            <td th:text="${#temporals.format(myQuestion.createdDate, 'yyyy-MM-dd')}"></td>
             <td th:text="${myQuestion.question.shareCounter}"></td>
         </tr>
         </tbody>

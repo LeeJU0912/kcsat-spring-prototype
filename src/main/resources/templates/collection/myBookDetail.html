@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/header :: header}">
     <title>Hello</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -43,9 +43,7 @@
 
     <!-- 버튼 -->
     <button class="btn btn-info btn-sm" onclick="showAnswer(this)">정답 확인하기</button>
-
-    <a th:href="@{/weekly/{id}/save(id=${question.id})}" class="btn btn-outline-warning">saveQuestion</a>
-    <a class="btn btn-secondary btn-sm" th:href="@{/weekly}">목록으로 돌아가기</a>
+    <a class="btn btn-secondary btn-sm" th:href="@{/myBook}">목록으로 돌아가기</a>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
 

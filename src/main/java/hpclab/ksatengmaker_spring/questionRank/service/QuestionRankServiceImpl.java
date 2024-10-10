@@ -6,17 +6,13 @@ import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseForm;
 import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionJPARepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.Math.*;
@@ -35,7 +31,7 @@ public class QuestionRankServiceImpl implements QuestionRankService {
     }
 
     @Override
-    @Scheduled(cron = "0 0/10 * * * *", zone = "Asia/Seoul") // 10분마다 실행
+    @Scheduled(cron = "0 0 0 * * MON", zone = "Asia/Seoul") // 월요일 자정마다 실행
     public void updateQuestionRank() {
         log.info("cron update question rank");
 

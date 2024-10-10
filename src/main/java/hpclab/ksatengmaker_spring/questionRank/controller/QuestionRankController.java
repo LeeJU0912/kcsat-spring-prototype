@@ -2,11 +2,8 @@ package hpclab.ksatengmaker_spring.questionRank.controller;
 
 import hpclab.ksatengmaker_spring.community.service.PostService;
 import hpclab.ksatengmaker_spring.myBook.service.BookQuestionService;
-import hpclab.ksatengmaker_spring.questionGenerator.domain.Choice;
 import hpclab.ksatengmaker_spring.questionGenerator.domain.Question;
-import hpclab.ksatengmaker_spring.questionGenerator.dto.QuestionResponseForm;
 import hpclab.ksatengmaker_spring.questionGenerator.repository.QuestionJPARepository;
-import hpclab.ksatengmaker_spring.questionGenerator.service.QuestionService;
 import hpclab.ksatengmaker_spring.questionRank.service.QuestionRankService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Slf4j
 @Controller
@@ -24,7 +20,6 @@ public class QuestionRankController {
     private final QuestionRankService questionRankService;
     private final QuestionJPARepository questionJPARepository;
     private final BookQuestionService bookQuestionService;
-    private final PostService postService;
 
     @GetMapping("/weekly")
     public String weeklyQuestionRank(Model model) {
@@ -39,18 +34,7 @@ public class QuestionRankController {
     public String weeklyQuestionDetail(Model model, @PathVariable Long qId) {
         Question question = questionJPARepository.findById(qId).orElseThrow(() -> new IllegalArgumentException("문제 참조 오류입니다아"));
 
-        QuestionResponseForm questionDTO = QuestionResponseForm.builder()
-                .qId(question.getId())
-                .title(question.getTitle())
-                .mainText(question.getMainText())
-                .questionType(question.getType())
-                .choices(question.getChoices().stream().map(Choice::getChoice).toList())
-                .shareCounter(question.getShareCounter())
-                .build();
-
-
-        model.addAttribute("rankedQuestion", questionDTO);
-        model.addAttribute("postDate", question.getCreatedDate());
+        model.addAttribute("question", question);
 
         return "questionRank/questionRankedDetail";
     }

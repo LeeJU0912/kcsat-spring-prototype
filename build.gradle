@@ -38,6 +38,8 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
+    implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
 
     implementation 'org.json:json:20240303'
     // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple

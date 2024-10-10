@@ -18,18 +18,18 @@ public class QQuestion extends EntityPathBase<Question> {
 
     private static final long serialVersionUID = 678615568L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QQuestion question = new QQuestion("question");
 
     public final hpclab.ksatengmaker_spring.community.domain.QBaseTimeEntity _super = new hpclab.ksatengmaker_spring.community.domain.QBaseTimeEntity(this);
 
-    public final QAnswer answer;
+    public final StringPath answer = createString("answer");
 
     public final ListPath<Choice, QChoice> choices = this.<Choice, QChoice>createList("choices", Choice.class, QChoice.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
+
+    public final StringPath explanation = createString("explanation");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -42,27 +42,20 @@ public class QQuestion extends EntityPathBase<Question> {
 
     public final StringPath title = createString("title");
 
+    public final StringPath translation = createString("translation");
+
     public final EnumPath<QuestionType> type = createEnum("type", QuestionType.class);
 
     public QQuestion(String variable) {
-        this(Question.class, forVariable(variable), INITS);
+        super(Question.class, forVariable(variable));
     }
 
     public QQuestion(Path<? extends Question> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QQuestion(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QQuestion(PathMetadata metadata, PathInits inits) {
-        this(Question.class, metadata, inits);
-    }
-
-    public QQuestion(Class<? extends Question> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.answer = inits.isInitialized("answer") ? new QAnswer(forProperty("answer")) : null;
+        super(Question.class, metadata);
     }
 
 }
